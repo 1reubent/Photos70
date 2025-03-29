@@ -1,5 +1,5 @@
 package photos70.photos70;
-//Comment
+
 import java.io.IOException;
 
 import javafx.application.Application;
