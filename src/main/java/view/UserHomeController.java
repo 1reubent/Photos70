@@ -52,7 +52,7 @@ public class UserHomeController {
 
   @FXML
   public void handleLogout() {
-    // Save user data to disk
+    // data changes are saved to disk when the app is closed. until then, they are held in memory.
     app.clearUserData();
     app.switchToLoginView((Stage) albumList.getScene().getWindow());
   }
@@ -83,8 +83,29 @@ public class UserHomeController {
     String selectedAlbum = albumList.getSelectionModel().getSelectedItem();
     if (selectedAlbum != null) {
       String albumName = selectedAlbum.split(" ")[1];
-      user.deleteAlbum(albumName);
-      populateAlbums();
+      // Check if the album is empty
+      Album album = user.getAlbum(albumName);
+      if (album != null && album.getPhotoCount() > 0) {
+        Alert alert = new Alert(Alert.AlertType.WARNING, "Album is not empty! Cannot delete.");
+        alert.showAndWait();
+        return;
+      }
+      // Confirm deletion
+      Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Are you sure you want to delete this album?");
+      alert.setTitle("Delete Album");
+      alert.showAndWait().ifPresent(response -> {
+        if (response == ButtonType.OK) {
+          user.deleteAlbum(albumName);
+          populateAlbums();
+        }
+      });
+    } else {
+      // No album selected
+      Alert alert = new Alert(Alert.AlertType.WARNING, "No album selected!");
+      alert.setTitle("Delete Album");
+      alert.setHeaderText("No album selected.");
+      alert.setContentText("Please select an album to delete.");
+      alert.showAndWait();
     }
   }
 

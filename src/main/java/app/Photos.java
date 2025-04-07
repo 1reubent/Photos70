@@ -24,12 +24,10 @@ public class Photos extends Application {
   private Scene adminHomeScene;
   private Map<String, Pair<Scene, UserHomeController>> userHomeScenes = new HashMap<>();
   private final String userListFilePath = getClass().getResource("/users.dat").getPath();
-//  private final String appStateFilePath = getClass().getResource("/app.dat").getPath();
   private Map<String, Object> userData = new HashMap<>();
 
   @Override
   public void start(Stage stage) throws IOException {
-
 // Load user list from disk or initialize empty
     userList = loadUserList();
     if (userList == null) {
@@ -132,7 +130,6 @@ public class Photos extends Application {
 
   @Override
   public void stop() throws IOException {
-//    saveAppState();
     saveUserList();
   }
 
@@ -152,15 +149,6 @@ public class Photos extends Application {
     }
   }
 
-  //save app state to disk
-//  public void saveAppState() {
-//    try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(appStateFilePath))) {
-//      out.writeObject(userList);
-//    } catch (IOException e) {
-//      e.printStackTrace();
-//    }
-//  }
-  //
   public static void main(String[] args) {
     launch(args);
   }
