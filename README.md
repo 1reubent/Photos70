@@ -2,19 +2,19 @@
 # Things we still need to do
 
 ## On the User home page:
-- import photo
-  - needs to be added to an album
 - create/add/delete/rename album
+  - check if these work
   - check to make sure the changes are permanent
  
 ## On the Album page:
 - Opening an album displays all photos, with their thumbnail images and captions, inside that album.
 - Display Photo:
     - Display a photo in a separate display area. The photo display should also show its caption, its date-time of capture (see Date of photo below), and all its tags (see Tags below).
+      - need to add caption, date, and tags to the photo display
 - All other unimplemented functionality
-    - Add Photo to Album
+    - ✅Add Photo to Album
       - Check to make sure changes are permanent
-    - Remove Photo
+    - ✅Remove Photo
     - Caption Photo (i think it works)
     - Add Tag
       - need to initialize with some tags for the user to choose from
@@ -26,13 +26,12 @@
       - Functionality to create an album using photo search results
 
 ## Storing data
-  - You are required to use the java.io.Serializable interface, and the java.io.ObjectOutputStream/java.io.ObjectInputStream classes to store and retrieve data.
-  - See Notes on Serialization and Versioning to know how to implement serialization and deserialization.
-  - (using jsons right now)
+  - ✅ You are required to use the java.io.Serializable interface, and the java.io.ObjectOutputStream/java.io.ObjectInputStream classes to store and retrieve data.
+    - See Notes on Serialization and Versioning to know how to implement serialization and deserialization.
+    - now using one `.dat` to save everything (see app.Photo) 
 
 ## Admin page/functionality:
   - not started
-  - 
 
 ## quit:
 - not implemented

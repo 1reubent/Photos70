@@ -1,5 +1,6 @@
 package app;
 
+import app.model.Photo;
 import app.model.User;
 import app.model.UserList;
 import javafx.application.Application;
@@ -9,7 +10,7 @@ import javafx.stage.Stage;
 import view.LoginController;
 import view.UserHomeController;
 
-import java.io.IOException;
+import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -19,18 +20,25 @@ public class Photos extends Application {
   private Scene loginScene;
   private Scene adminHomeScene;
   private Map<String, Scene> userHomeScenes = new HashMap<>();
+  private final String userListFilePath = getClass().getResource("/users.dat").getPath();
+//  private final String appStateFilePath = getClass().getResource("/app.dat").getPath();
 
   @Override
   public void start(Stage stage) throws IOException {
     stage.setUserData(this); // used in UserHomeController to access the app instance
-    // Load user list from disk or initialize empty
-    try {
-      userList = UserList.load(getClass().getResource("/users.json").getPath());
-    } catch (IOException e) {
+// Load user list from disk or initialize empty
+    userList = loadUserList();
+    if (userList == null) {
       userList = new UserList();
     }
-    userList.initializeStockPhotos();
+    if (!userList.hasUser("stock")) {
+      initializeStockPhotos();
+      //print that stcok user has been initialized
+      System.out.println("Stock user initialized");
+    }
+
     System.out.println("Users loaded: " + userList.getAllUsers().keySet());
+    System.out.println("Stock user and album initialized: " + userList.getUser("stock").getAlbums().keySet());
 
     FXMLLoader fxmlLoader = new FXMLLoader(Photos.class.getResource("/view/login-view.fxml"));
     loginScene = new Scene(fxmlLoader.load(), 320, 240);
@@ -40,6 +48,28 @@ public class Photos extends Application {
     stage.setScene(loginScene);
     stage.show();
   }
+
+  public void initializeStockPhotos() {
+    userList.addUser("stock");
+    userList.addAlbum("stock", "stock");
+    String[] stockPhotoPaths = {
+            "data/stock1.jpg",
+            "data/stock2.jpg",
+            "data/stock3.jpg",
+            "data/stock4.jpg",
+            "data/stock5.jpg"
+    };
+
+    for (String path : stockPhotoPaths) {
+      userList.addUserPhoto("stock", "stock", path);
+    }
+    try {
+      saveUserList();
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
 
   public UserList getUserList() {
     return userList;
@@ -62,6 +92,7 @@ public class Photos extends Application {
 
   //    TODO: Implement the admin home view
   //      its init method must take the app as a parameter, and the admin user
+  //      need to save admin user to disk
   public void switchToAdminHomeView(Stage stage) throws IOException {
     if (adminHomeScene == null) {
       FXMLLoader adminHomeLoader = new FXMLLoader(getClass().getResource("/view/admin-home-view.fxml"));
@@ -76,9 +107,35 @@ public class Photos extends Application {
 
   @Override
   public void stop() throws IOException {
-    UserList.save(userList, getClass().getResource("/users.json").getPath());
+//    saveAppState();
+    saveUserList();
   }
 
+  /* PERSISTENCE METHODS*/
+  private void saveUserList() throws IOException {
+    try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(userListFilePath))) {
+      out.writeObject(userList);
+    }
+  }
+
+  private UserList loadUserList() {
+    try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(userListFilePath))) {
+      return (UserList) in.readObject();
+    } catch (IOException | ClassNotFoundException e) {
+      e.printStackTrace();
+      return null;
+    }
+  }
+
+  //save app state to disk
+//  public void saveAppState() {
+//    try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(appStateFilePath))) {
+//      out.writeObject(userList);
+//    } catch (IOException e) {
+//      e.printStackTrace();
+//    }
+//  }
+  //
   public static void main(String[] args) {
     launch(args);
   }

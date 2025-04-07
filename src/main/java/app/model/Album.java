@@ -20,11 +20,21 @@ public class Album implements Serializable {
 
   public List<Photo> getPhotos() { return photos; }
 
+  //get photo by path
+  public Photo getPhoto(String path) {
+    for (Photo photo : photos) {
+      if (photo.getPath().equals(path)) {
+        return photo;
+      }
+    }
+    return null;
+  }
   public void addPhoto(Photo photo) {
     if (!photos.contains(photo)) {
       photos.add(photo);
     }
   }
+
 
   public void removePhoto(Photo photo) {
     photos.remove(photo);
@@ -48,7 +58,7 @@ public class Album implements Serializable {
         latest = photo.getDateTaken();
       }
     }
-    return earliest.toString() + " - " + latest.toString();
+    return earliest.toString() + " -- " + latest.toString();
   }
   public LocalDateTime getEarliestDate() {
     return photos.stream().map(Photo::getDateTaken).min(LocalDateTime::compareTo).orElse(null);

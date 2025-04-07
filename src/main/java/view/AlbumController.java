@@ -59,8 +59,7 @@ public class AlbumController {
   public void handleRemovePhoto() {
     String selectedPhoto = photoList.getSelectionModel().getSelectedItem();
     if (selectedPhoto != null) {
-      Photo photo = new Photo(selectedPhoto);
-      album.removePhoto(photo);
+      album.removePhoto(album.getPhoto(selectedPhoto));
       populatePhotos();
       statusLabel.setText("Photo removed: " + selectedPhoto);
     }else {

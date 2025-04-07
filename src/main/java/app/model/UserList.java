@@ -13,30 +13,11 @@ public class UserList implements Serializable {
   public UserList() {
     users = new HashMap<>();
   }
-  public void initializeStockPhotos() {
-    User stockUser = new User("stock");
-    stockUser.addAlbum("stock");
-
-    String[] stockPhotoPaths = {
-            "data/stock1.jpg",
-            "data/stock2.jpg",
-            "data/stock3.jpg",
-            "data/stock4.jpg",
-            "data/stock5.jpg"
-    };
-
-    for (String path : stockPhotoPaths) {
-      stockUser.addPhotoToAlbum("stock", new Photo(path));
+  public void addAlbum(String username, String albumName) {
+    User user = users.get(username);
+    if (user != null) {
+      user.addAlbum(albumName);
     }
-
-    users.put("stock", stockUser);
-    try {
-      save(this, getClass().getResource("/users.json").getPath());
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
-    System.out.println("Stock user and album initialized: " + stockUser.getAlbums().keySet());
-
   }
   public void addUserPhoto(String username, String albumName, String photoPath) {
     User user = users.get(username);
@@ -64,33 +45,5 @@ public class UserList implements Serializable {
 
   public boolean hasUser(String username) {
     return users.containsKey(username);
-  }
-
-  public static void save(UserList list, String filename) throws IOException {
-    JSONObject json = new JSONObject();
-    for (User user : list.getAllUsers().values()) {
-      json.put(user.getUsername(), new JSONObject(user));
-    }
-    try (FileWriter file = new FileWriter(filename)) {
-      file.write(json.toString(4));
-    }
-  }
-
-  public static UserList load(String filename) throws IOException {
-    UserList userList = new UserList();
-    try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
-      StringBuilder jsonText = new StringBuilder();
-      String line;
-      while ((line = reader.readLine()) != null) {
-        jsonText.append(line);
-      }
-      JSONObject json = new JSONObject(jsonText.toString());
-      for (String key : json.keySet()) {
-        JSONObject userJson = json.getJSONObject(key);
-        User user = new User(userJson.getString("username"));
-        userList.users.put(user.getUsername(), user);
-      }
-    }
-    return userList;
   }
 }
