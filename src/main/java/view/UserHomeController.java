@@ -37,7 +37,7 @@ public class UserHomeController {
     System.out.println("User logged in: " + user.getUsername());
   }
 
-  private void populateAlbums() {
+  public void populateAlbums() {
     System.out.println(user.getUsername());
     System.out.println(user.getAlbums().keySet());
     albumList.getItems().clear();
@@ -53,39 +53,9 @@ public class UserHomeController {
   @FXML
   public void handleLogout() {
     // Save user data to disk
-
-
+    app.clearUserData();
     app.switchToLoginView((Stage) albumList.getScene().getWindow());
   }
-
-//  @FXML
-////  TODO: importing should be done in the album view? otherwise we need to put the photo in an album
-//  public void handleImport() {
-//    FileChooser fileChooser = new FileChooser();
-//    fileChooser.setTitle("Import Photo");
-//    fileChooser.getExtensionFilters().add(
-//            new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.jpeg", "*.gif")
-//    );
-//    File selectedFile = fileChooser.showOpenDialog(null);
-//    if (selectedFile != null) {
-//      photoList.getItems().add(selectedFile.getAbsolutePath());
-//      statusLabel.setText("Imported: " + selectedFile.getName());
-//    }
-//  }
-//
-//  @FXML
-//  public void handleAddTag() {
-//    // Placeholder for tag adding logic
-//    Alert alert = new Alert(Alert.AlertType.INFORMATION, "Add Tag - Coming Soon!");
-//    alert.showAndWait();
-//  }
-//
-//  @FXML
-//  public void handleRemoveTag() {
-//    // Placeholder for tag removing logic
-//    Alert alert = new Alert(Alert.AlertType.INFORMATION, "Remove Tag - Coming Soon!");
-//    alert.showAndWait();
-//  }
 
   private void showError(String message) {
     Alert alert = new Alert(Alert.AlertType.ERROR, message);
@@ -100,7 +70,10 @@ public class UserHomeController {
     dialog.setHeaderText("Enter album name:");
     dialog.setContentText("Name:");
     dialog.showAndWait().ifPresent(name -> {
-      user.addAlbum(name);
+      if(!user.addAlbum(name)){
+        showError("Album already exists!");
+        return;
+      };
       populateAlbums();
     });
   }

@@ -7,11 +7,14 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import javafx.util.Pair;
 import view.LoginController;
 import view.UserHomeController;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class Photos extends Application {
@@ -19,13 +22,14 @@ public class Photos extends Application {
   private User admin;
   private Scene loginScene;
   private Scene adminHomeScene;
-  private Map<String, Scene> userHomeScenes = new HashMap<>();
+  private Map<String, Pair<Scene, UserHomeController>> userHomeScenes = new HashMap<>();
   private final String userListFilePath = getClass().getResource("/users.dat").getPath();
 //  private final String appStateFilePath = getClass().getResource("/app.dat").getPath();
+  private Map<String, Object> userData = new HashMap<>();
 
   @Override
   public void start(Stage stage) throws IOException {
-    stage.setUserData(this); // used in UserHomeController to access the app instance
+
 // Load user list from disk or initialize empty
     userList = loadUserList();
     if (userList == null) {
@@ -82,17 +86,38 @@ public class Photos extends Application {
   public void switchToUserHomeView(Stage stage, String username) throws IOException {
     if (!userHomeScenes.containsKey(username)) {
       FXMLLoader userHomeLoader = new FXMLLoader(getClass().getResource("/view/user-home-view.fxml"));
-      Scene userHomeScene = new Scene(userHomeLoader.load());
+      Scene userHomeScene = new Scene(userHomeLoader.load(), 640, 650);
       UserHomeController userHomeController = userHomeLoader.getController();
       userHomeController.init(this, userList.getUser(username));
-      userHomeScenes.put(username, userHomeScene);
+      userHomeScenes.put(username, new Pair<>(userHomeScene, userHomeController));
+    } else {
+      // Run populate albums before switching to the scene
+      userHomeScenes.get(username).getValue().populateAlbums();
     }
-    stage.setScene(userHomeScenes.get(username));
+    stage.setScene(userHomeScenes.get(username).getKey());
+  }
+
+  /* PUBLIC METHODS TO MANAGE USER DATA */
+  public void addUserData(String key, Object value) {
+    userData.put(key, value);
+  }
+
+  public Object getUserData(String key) {
+    return userData.get(key);
+  }
+
+  public List<String> getUserDataKeys() {
+    return new ArrayList<>(userData.keySet());
+  }
+
+  public void clearUserData() {
+    userData.clear();
   }
 
   //    TODO: Implement the admin home view
   //      its init method must take the app as a parameter, and the admin user
   //      need to save admin user to disk
+  //      need to save admin controller and scene.
   public void switchToAdminHomeView(Stage stage) throws IOException {
     if (adminHomeScene == null) {
       FXMLLoader adminHomeLoader = new FXMLLoader(getClass().getResource("/view/admin-home-view.fxml"));
