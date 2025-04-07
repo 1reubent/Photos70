@@ -13,8 +13,8 @@
                 <Insets top="10" right="10" bottom="10" left="10"/>
             </padding>
             <Button text="Import Photo" onAction="#handleImport"/>
-            <Button text="Add Tag" onAction="#handleAddTag"/>
-            <Button text="Remove Tag" onAction="#handleRemoveTag"/>
+<!--            <Button text="Add Tag" onAction="#handleAddTag"/>-->
+<!--            <Button text="Remove Tag" onAction="#handleRemoveTag"/>-->
             <Button text="Logout" onAction="#handleLogout"/>
         </HBox>
     </top>

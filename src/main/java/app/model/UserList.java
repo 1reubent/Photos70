@@ -18,11 +18,11 @@ public class UserList implements Serializable {
     stockUser.addAlbum("stock");
 
     String[] stockPhotoPaths = {
-            "src/main/resources/stock1.jpg",
-            "src/main/resources/stock2.jpg",
-            "src/main/resources/stock3.jpg",
-            "src/main/resources/stock4.jpg",
-            "src/main/resources/stock5.jpg"
+            "data/stock1.jpg",
+            "data/stock2.jpg",
+            "data/stock3.jpg",
+            "data/stock4.jpg",
+            "data/stock5.jpg"
     };
 
     for (String path : stockPhotoPaths) {
