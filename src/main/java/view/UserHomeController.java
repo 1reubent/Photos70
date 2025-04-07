@@ -109,7 +109,7 @@ public class UserHomeController {
   public void handleDeleteAlbum() {
     String selectedAlbum = albumList.getSelectionModel().getSelectedItem();
     if (selectedAlbum != null) {
-      String albumName = selectedAlbum.split(" ")[0];
+      String albumName = selectedAlbum.split(" ")[1];
       user.deleteAlbum(albumName);
       populateAlbums();
     }
@@ -119,7 +119,7 @@ public class UserHomeController {
   public void handleRenameAlbum() {
     String selectedAlbum = albumList.getSelectionModel().getSelectedItem();
     if (selectedAlbum != null) {
-      String oldName = selectedAlbum.split(" ")[0];
+      String oldName = selectedAlbum.split(" ")[1];
       TextInputDialog dialog = new TextInputDialog(oldName);
       dialog.setTitle("Rename Album");
       dialog.setHeaderText("Enter new album name:");
@@ -135,7 +135,7 @@ public class UserHomeController {
   public void handleOpenAlbum() {
     String selectedAlbum = albumList.getSelectionModel().getSelectedItem();
     if (selectedAlbum != null) {
-      String albumName = selectedAlbum.split(" ")[0];
+      String albumName = selectedAlbum.split(" ")[1];
       Album album = user.getAlbums().get(albumName);
       if (album != null) {
         openAlbumView(album);
