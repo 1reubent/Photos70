@@ -1,5 +1,6 @@
 package view;
 
+import app.Photos;
 import app.model.Album;
 import app.model.Photo;
 import app.model.User;
@@ -14,6 +15,7 @@ import javafx.scene.layout.*;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
+
 import java.io.File;
 import java.io.IOException;
 
@@ -22,10 +24,12 @@ public class AlbumController {
   @FXML private Label statusLabel;
   private Album album;
   private User user;
+  private Photos app;
 
-  public void init(User user, Album album) {
+  public void init(Photos app, User user, Album album) {
     this.user = user;
     this.album = album;
+    this.app = app;
     populatePhotos();
   }
 
@@ -184,12 +188,7 @@ public class AlbumController {
   @FXML
   public void handleBack() {
     try {
-      FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/user-home-view.fxml"));
-      Scene scene = new Scene(loader.load());
-      UserHomeController controller = loader.getController();
-      controller.init(user); // Pass the user object if needed
-      Stage stage = (Stage) photoList.getScene().getWindow();
-      stage.setScene(scene);
+      app.switchToUserHomeView((Stage) photoList.getScene().getWindow(), user.getUsername());
     } catch (IOException e) {
       e.printStackTrace();
     }

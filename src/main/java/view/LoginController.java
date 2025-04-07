@@ -1,11 +1,10 @@
 package view;
 
+import app.Photos;
 import app.model.UserList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
 
 import java.io.IOException;
 
@@ -17,22 +16,17 @@ public class LoginController {
   @FXML
   private Label errorLabel;
 
-  private UserList userList;
+  private Photos app;
 
-  public void initialize() throws IOException {
-    // Load user list from disk or initialize empty
-    userList = UserList.load(getClass().getResource("/users.json").getPath());
-    System.out.println("LoginController Users loaded: " + userList.getAllUsers().keySet());
-    System.out.println("LoginController Stock albums: " + userList.getUser("stock").getAlbums().keySet() );
-  }
-
-  public void setUserList(UserList userList) {
-    this.userList = userList;
+  public void setApp(Photos app) {
+    this.app = app;
+    System.out.println("LoginController Stock albums: " + app.getUserList().getUser("stock").getAlbums().keySet() );
   }
 
   @FXML
   private void handleLogin() {
     String username = usernameField.getText().trim();
+    usernameField.clear();
 
     if (username.isEmpty()) {
       errorLabel.setText("Username cannot be empty.");
@@ -44,7 +38,7 @@ public class LoginController {
       return;
     }
 
-    if (!userList.hasUser(username)) {
+    if (!app.getUserList().hasUser(username)) {
       errorLabel.setText("User not found.");
       return;
     }
@@ -54,10 +48,7 @@ public class LoginController {
 
   private void openAdminView() {
     try {
-      FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/admin-view.fxml"));
-      Scene scene = new Scene(loader.load());
-      Stage stage = (Stage) usernameField.getScene().getWindow();
-      stage.setScene(scene);
+      app.switchToAdminHomeView((Stage) usernameField.getScene().getWindow());
     } catch (IOException e) {
       e.printStackTrace();
     }
@@ -65,16 +56,7 @@ public class LoginController {
 
   private void openUserView(String username) {
     try {
-      FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/user-home-view.fxml"));
-      Scene scene = new Scene(loader.load());
-
-      // Pass username to the controller
-      UserHomeController controller = loader.getController();
-      System.out.println("stock user albums: " + userList.getUser(username).getAlbums().keySet());
-      controller.init(userList.getUser(username));
-
-      Stage stage = (Stage) usernameField.getScene().getWindow();
-      stage.setScene(scene);
+      app.switchToUserHomeView((Stage) usernameField.getScene().getWindow(), username);
     } catch (IOException e) {
       e.printStackTrace();
     }
