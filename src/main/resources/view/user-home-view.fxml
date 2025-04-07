@@ -18,9 +18,15 @@
             <Button text="Logout" onAction="#handleLogout"/>
         </HBox>
     </top>
-
     <center>
-        <ListView fx:id="photoList"/>
+        <VBox spacing="10">
+            <Label text="Albums"/>
+            <ListView fx:id="albumList"/>
+            <Button text="Create Album" onAction="#handleCreateAlbum"/>
+            <Button text="Delete Album" onAction="#handleDeleteAlbum"/>
+            <Button text="Rename Album" onAction="#handleRenameAlbum"/>
+            <Button text="Open Album" onAction="#handleOpenAlbum"/>
+        </VBox>
     </center>
 
     <bottom>

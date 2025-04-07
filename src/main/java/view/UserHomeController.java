@@ -1,5 +1,6 @@
 package view;
 
+import app.model.Album;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.stage.FileChooser;
@@ -13,13 +14,30 @@ import java.io.IOException;
 
 
 public class UserHomeController {
+    @FXML private ListView<String> albumList;
     @FXML private ListView<String> photoList;
     @FXML private Label statusLabel;
     private User user;
 
     public void init(User user) {
         this.user = user;
+        System.out.println("UserHomeController initialized with user: " + user.getUsername());
+        System.out.println("Albums: " + user.getAlbums());
+
+        populateAlbums();
         // Additional initialization code here
+        System.out.println("User logged in: " + user.getUsername());
+    }
+
+    private void populateAlbums() {
+        System.out.println(user.getUsername());
+        System.out.println(user.getAlbums().keySet());
+        albumList.getItems().clear();
+        for (Album album : user.getAlbums().values()) {
+            albumList.getItems().add(album.getName());
+        }
+        System.out.println("Albums populated: " + albumList.getItems());
+
     }
     @FXML
     public void handleImport() {
@@ -55,6 +73,73 @@ public class UserHomeController {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/login-view.fxml"));
             Scene scene = new Scene(loader.load(), 320, 240);
             Stage stage = (Stage) photoList.getScene().getWindow();
+            stage.setScene(scene);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    @FXML
+    public void handleCreateAlbum() {
+        TextInputDialog dialog = new TextInputDialog();
+        dialog.setTitle("Create Album");
+        dialog.setHeaderText("Enter album name:");
+        dialog.setContentText("Name:");
+        dialog.showAndWait().ifPresent(name -> {
+            user.addAlbum(name);
+            populateAlbums();
+        });
+    }
+
+    @FXML
+    public void handleDeleteAlbum() {
+        String selectedAlbum = albumList.getSelectionModel().getSelectedItem();
+        if (selectedAlbum != null) {
+            String albumName = selectedAlbum.split(" ")[0];
+            user.deleteAlbum(albumName);
+            populateAlbums();
+        }
+    }
+
+    @FXML
+    public void handleRenameAlbum() {
+        String selectedAlbum = albumList.getSelectionModel().getSelectedItem();
+        if (selectedAlbum != null) {
+            String oldName = selectedAlbum.split(" ")[0];
+            TextInputDialog dialog = new TextInputDialog(oldName);
+            dialog.setTitle("Rename Album");
+            dialog.setHeaderText("Enter new album name:");
+            dialog.setContentText("Name:");
+            dialog.showAndWait().ifPresent(newName -> {
+                user.renameAlbum(oldName, newName);
+                populateAlbums();
+            });
+        }
+    }
+
+    @FXML
+    public void handleOpenAlbum() {
+        String selectedAlbum = albumList.getSelectionModel().getSelectedItem();
+        if (selectedAlbum != null) {
+            String albumName = selectedAlbum.split(" ")[0];
+            Album album = user.getAlbums().get(albumName);
+            if (album != null) {
+                openAlbumView(album);
+            }
+        }else{
+            Alert alert = new Alert(Alert.AlertType.WARNING, "No album selected!");
+            alert.showAndWait();
+        }
+    }
+
+    private void openAlbumView(Album album) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/album-view.fxml"));
+            Scene scene = new Scene(loader.load());
+            AlbumController controller = loader.getController();
+            controller.init(user, album);
+            Stage stage = (Stage) albumList.getScene().getWindow();
             stage.setScene(scene);
         } catch (IOException e) {
             e.printStackTrace();

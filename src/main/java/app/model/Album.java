@@ -11,6 +11,7 @@ public class Album implements Serializable {
   public Album(String name) {
     this.name = name;
     this.photos = new ArrayList<>();
+    System.out.println("Album created: " + name);
   }
 
   public String getName() { return name; }
@@ -28,7 +29,27 @@ public class Album implements Serializable {
   public void removePhoto(Photo photo) {
     photos.remove(photo);
   }
+  public int getPhotoCount() {
+    return photos.size();
+  }
+  public String getDateRange() {
+    if (photos.isEmpty()) {
+      return "No photos";
+    }
+    // Assuming Photo class has a getDate() method returning a Date object
+    LocalDateTime earliest = photos.get(0).getDateTaken();
+    LocalDateTime latest = photos.get(0).getDateTaken();
+    for (Photo photo : photos) {
+      if (photo.getDateTaken().isBefore(earliest)) {
+        earliest = photo.getDateTaken();
+      }
 
+      if (photo.getDateTaken().isAfter(latest)) {
+        latest = photo.getDateTaken();
+      }
+    }
+    return earliest.toString() + " - " + latest.toString();
+  }
   public LocalDateTime getEarliestDate() {
     return photos.stream().map(Photo::getDateTaken).min(LocalDateTime::compareTo).orElse(null);
   }

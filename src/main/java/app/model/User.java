@@ -14,8 +14,8 @@ public class User implements Serializable {
 
   public String getUsername() { return username; }
 
-  public Collection<Album> getAlbums() {
-    return albums.values();
+  public Map<String, Album> getAlbums() {
+    return albums;
   }
 
   public Album getAlbum(String name) {
@@ -25,9 +25,16 @@ public class User implements Serializable {
   public boolean addAlbum(String name) {
     if (albums.containsKey(name)) return false;
     albums.put(name, new Album(name));
+    System.out.println("Album added: " + name);
+    System.out.println("Current albums: " + albums.keySet());
     return true;
   }
-
+  public void addPhotoToAlbum(String albumName, Photo photo) {
+    albums.get(albumName).addPhoto(photo);
+  }
+  public void removePhotoFromAlbum(String albumName, Photo photo) {
+    albums.get(albumName).removePhoto(photo);
+  }
   public boolean deleteAlbum(String name) {
     return albums.remove(name) != null;
   }

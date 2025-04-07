@@ -8,4 +8,9 @@
   "terminal.integrated.env.windows": {
     "JAVA_HOME": "C:/Program Files/Java/jdk-XX.X.X"
   }
+//  echo %JAVA_HOME%
+//  OR
+// where java;
+  // C:\Program Files\Java\jdk-21\bin\java.exe
+  //From this, JAVA_HOME is C:\Program Files\Java\jdk-21
 }

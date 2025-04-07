@@ -22,6 +22,12 @@ public class LoginController {
   public void initialize() throws IOException {
     // Load user list from disk or initialize empty
     userList = UserList.load(getClass().getResource("/users.json").getPath());
+    System.out.println("LoginController Users loaded: " + userList.getAllUsers().keySet());
+    System.out.println("LoginController Stock albums: " + userList.getUser("stock").getAlbums().keySet() );
+  }
+
+  public void setUserList(UserList userList) {
+    this.userList = userList;
   }
 
   @FXML
@@ -64,6 +70,7 @@ public class LoginController {
 
       // Pass username to the controller
       UserHomeController controller = loader.getController();
+      System.out.println("stock user albums: " + userList.getUser(username).getAlbums().keySet());
       controller.init(userList.getUser(username));
 
       Stage stage = (Stage) usernameField.getScene().getWindow();

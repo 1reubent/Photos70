@@ -13,7 +13,37 @@ public class UserList implements Serializable {
   public UserList() {
     users = new HashMap<>();
   }
+  public void initializeStockPhotos() {
+    User stockUser = new User("stock");
+    stockUser.addAlbum("stock");
 
+    String[] stockPhotoPaths = {
+            "src/main/resources/stock1.jpg",
+            "src/main/resources/stock2.jpg",
+            "src/main/resources/stock3.jpg",
+            "src/main/resources/stock4.jpg",
+            "src/main/resources/stock5.jpg"
+    };
+
+    for (String path : stockPhotoPaths) {
+      stockUser.addPhotoToAlbum("stock", new Photo(path));
+    }
+
+    users.put("stock", stockUser);
+    try {
+      save(this, getClass().getResource("/users.json").getPath());
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    System.out.println("Stock user and album initialized: " + stockUser.getAlbums().keySet());
+
+  }
+  public void addUserPhoto(String username, String albumName, String photoPath) {
+    User user = users.get(username);
+    if (user != null) {
+      user.addPhotoToAlbum(albumName, new Photo(photoPath));
+    }
+  }
   public boolean addUser(String username) {
     if (users.containsKey(username)) return false;
     users.put(username, new User(username));
@@ -28,8 +58,8 @@ public class UserList implements Serializable {
     return users.get(username);
   }
 
-  public Collection<User> getAllUsers() {
-    return users.values();
+  public Map<String, User> getAllUsers() {
+    return users;
   }
 
   public boolean hasUser(String username) {
@@ -38,7 +68,7 @@ public class UserList implements Serializable {
 
   public static void save(UserList list, String filename) throws IOException {
     JSONObject json = new JSONObject();
-    for (User user : list.getAllUsers()) {
+    for (User user : list.getAllUsers().values()) {
       json.put(user.getUsername(), new JSONObject(user));
     }
     try (FileWriter file = new FileWriter(filename)) {
