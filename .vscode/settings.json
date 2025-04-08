@@ -6,7 +6,7 @@
   },
   // TODO: Windows JAVA jdk path needs to be set for Ryan (windows)
   "terminal.integrated.env.windows": {
-    "JAVA_HOME": "C:/Program Files/Java/jdk-XX.X.X"
+    "JAVA_HOME": "C:/Program Files/Java/jdk-23"
   }
 //  echo %JAVA_HOME%
 //  OR
