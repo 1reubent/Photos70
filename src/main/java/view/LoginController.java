@@ -20,7 +20,7 @@ public class LoginController {
 
   public void setApp(Photos app) {
     this.app = app;
-    System.out.println("LoginController Stock albums: " + app.getUserList().getUser("stock").getAlbums().keySet() );
+    System.out.println("LoginController Stock albums: " + app.getUserList().getUser("stock").getAlbumNames());
   }
   @FXML
   private void handleEnterKey(javafx.scene.input.KeyEvent event) {

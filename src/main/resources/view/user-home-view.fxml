@@ -16,6 +16,7 @@
 <!--            <Button text="Add Tag" onAction="#handleAddTag"/>-->
 <!--            <Button text="Remove Tag" onAction="#handleRemoveTag"/>-->
             <Button text="Logout" onAction="#handleLogout"/>
+            <Button text="Edit My Tag Types" onAction="#handleEditTagTypes"/>
         </HBox>
     </top>
     <center>
@@ -28,6 +29,7 @@
             <Button text="Open Album" onAction="#handleOpenAlbum"/>
         </VBox>
     </center>
+
 
     <bottom>
         <Label fx:id="statusLabel">

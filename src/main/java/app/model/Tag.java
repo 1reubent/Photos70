@@ -1,23 +1,35 @@
 package app.model;
 
 import java.io.Serializable;
-import java.util.Objects;
+import java.util.*;
 
 public class Tag implements Serializable {
   private String name;
-  private String value;
+  private Set<String> values;
 
-  public Tag(String type, String value) {
-    this.name = type.toLowerCase();
-    this.value = value.toLowerCase();
+  public Tag(String name, String value) {
+    this.name = name.toLowerCase();
+    this.values = new HashSet<>();
+    this.values.add(value.toLowerCase());
   }
 
   public String getName() {
     return name;
   }
 
-  public String getValue() {
-    return value;
+  public Set<String> getValues() {
+    return values;
+  }
+
+  public void addValue(String value, boolean allowsMultipleValues) {
+    if (!allowsMultipleValues && !values.isEmpty()) {
+      throw new IllegalStateException("This tag type allows only one value.");
+    }
+    values.add(value.toLowerCase());
+  }
+
+  public void removeValue(String value) {
+    values.remove(value.toLowerCase());
   }
 
   @Override
@@ -25,16 +37,16 @@ public class Tag implements Serializable {
     if (this == obj) return true;
     if (!(obj instanceof Tag)) return false;
     Tag other = (Tag) obj;
-    return name.equals(other.name) && value.equals(other.value);
+    return name.equals(other.name) && values.equals(other.values);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(name, value);
+    return Objects.hash(name, values);
   }
 
   @Override
   public String toString() {
-    return name + "=" + value;
+    return name + "=" + String.join(", ", values);
   }
 }

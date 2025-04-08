@@ -21,7 +21,10 @@ public class Photo implements Serializable {
             new Date(file.lastModified()).toInstant(), ZoneId.systemDefault()
     );
   }
-
+  //get name
+  public String getName() {
+    return new File(path).getName();
+  }
   public String getPath() { return path; }
 
   public String getCaption() { return caption; }
@@ -36,6 +39,15 @@ public class Photo implements Serializable {
 
   public void removeTag(Tag tag) { tags.remove(tag); }
 
+  //has tag type
+  public boolean hasTagType(String name) {
+    for (Tag tag : tags) {
+      if (tag.getName().equalsIgnoreCase(name)) {
+        return true;
+      }
+    }
+    return false;
+  }
   @Override
   public String toString() {
     return caption + " - " + dateTaken.toString();

@@ -13,22 +13,12 @@ public class UserList implements Serializable {
   public UserList() {
     users = new HashMap<>();
   }
-  public void addAlbum(String username, String albumName) {
-    User user = users.get(username);
-    if (user != null) {
-      user.addAlbum(albumName);
-    }
-  }
-  public void addUserPhoto(String username, String albumName, String photoPath) {
-    User user = users.get(username);
-    if (user != null) {
-      user.addPhotoToAlbum(albumName, new Photo(photoPath));
-    }
-  }
-  public boolean addUser(String username) {
-    if (users.containsKey(username)) return false;
-    users.put(username, new User(username));
-    return true;
+
+  public User addUser(String username) {
+    if (users.containsKey(username)) return null;
+    User new_user = new User(username);
+    users.put(username, new_user);
+    return new_user;
   }
 
   public boolean deleteUser(String username) {

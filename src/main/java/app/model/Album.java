@@ -29,12 +29,12 @@ public class Album implements Serializable {
     }
     return null;
   }
+
   public void addPhoto(Photo photo) {
     if (!photos.contains(photo)) {
       photos.add(photo);
     }
   }
-
 
   public void removePhoto(Photo photo) {
     photos.remove(photo);
@@ -46,19 +46,7 @@ public class Album implements Serializable {
     if (photos.isEmpty()) {
       return "No photos";
     }
-    // Assuming Photo class has a getDate() method returning a Date object
-    LocalDateTime earliest = photos.get(0).getDateTaken();
-    LocalDateTime latest = photos.get(0).getDateTaken();
-    for (Photo photo : photos) {
-      if (photo.getDateTaken().isBefore(earliest)) {
-        earliest = photo.getDateTaken();
-      }
-
-      if (photo.getDateTaken().isAfter(latest)) {
-        latest = photo.getDateTaken();
-      }
-    }
-    return earliest.toString() + " -- " + latest.toString();
+    return getEarliestDate().toString() + " -- " + getLatestDate().toString();
   }
   public LocalDateTime getEarliestDate() {
     return photos.stream().map(Photo::getDateTaken).min(LocalDateTime::compareTo).orElse(null);

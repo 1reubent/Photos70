@@ -23,16 +23,29 @@ public class Photos extends Application {
   private Scene loginScene;
   private Scene adminHomeScene;
   private Map<String, Pair<Scene, UserHomeController>> userHomeScenes = new HashMap<>();
-  private final String userListFilePath = getClass().getResource("/users.dat").getPath();
+  private static String userListFilePath = null; //initialied in start method
   private Map<String, Object> userData = new HashMap<>();
 
   @Override
   public void start(Stage stage) throws IOException {
-// Load user list from disk or initialize empty
-    userList = loadUserList();
-    if (userList == null) {
+    /*INITIALIZE USERS.DAT */
+
+    // Get the resource URL for users.dat
+    java.net.URL resourceUrl = getClass().getResource("/users.dat");
+    if (resourceUrl == null) {
+      // File doesn't exist in resources, create it
+      File resourcesDir = new File(getClass().getResource("/").getPath());
+      File usersFile = new File(resourcesDir, "users.dat");
+      usersFile.createNewFile();
+      userListFilePath = usersFile.getPath();
       userList = new UserList();
+    } else {
+      // File exists, set the path and load user list
+      userListFilePath = resourceUrl.getPath();
+      userList = loadUserList();
     }
+
+    /*INITIALIZE STOCK USER*/
     if (!userList.hasUser("stock")) {
       initializeStockPhotos();
       //print that stcok user has been initialized
@@ -40,7 +53,7 @@ public class Photos extends Application {
     }
 
     System.out.println("Users loaded: " + userList.getAllUsers().keySet());
-    System.out.println("Stock user and album initialized: " + userList.getUser("stock").getAlbums().keySet());
+    System.out.println("Stock user and album initialized: " + userList.getUser("stock").getAlbumNames());
 
     FXMLLoader fxmlLoader = new FXMLLoader(Photos.class.getResource("/view/login-view.fxml"));
     loginScene = new Scene(fxmlLoader.load(), 320, 240);
@@ -52,8 +65,8 @@ public class Photos extends Application {
   }
 
   public void initializeStockPhotos() {
-    userList.addUser("stock");
-    userList.addAlbum("stock", "stock");
+    User stock_user = userList.addUser("stock");
+    stock_user.addAlbum("stock");
     String[] stockPhotoPaths = {
             "data/stock1.jpg",
             "data/stock2.jpg",
@@ -63,7 +76,7 @@ public class Photos extends Application {
     };
 
     for (String path : stockPhotoPaths) {
-      userList.addUserPhoto("stock", "stock", path);
+      stock_user.getAlbum("stock").addPhoto(new Photo(path));
     }
     try {
       saveUserList();
