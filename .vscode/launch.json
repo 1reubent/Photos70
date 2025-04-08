@@ -10,7 +10,7 @@
       "request": "launch",
       "mainClass": "app.Photos",
       "projectName": "Photos70",
-      "vmArgs": "--module-path ${workspaceFolder}/javafx-sdk-23.0.2/lib --add-modules javafx.controls,javafx.fxml",
+      "vmArgs": "--module-path /Users/reubenthomas/Desktop/coding/rutgers_code/softmeth/javafx-sdk-23.0.2/lib --add-modules javafx.controls,javafx.fxml",
       "windows": {
         "vmArgs": "--module-path \"C:/Users/queak/Desktop/javafx-sdk-24/lib\" --add-modules javafx.controls,javafx.fxml"
       }
