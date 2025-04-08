@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml" fx:controller="view.UserHomeController">
+    <children>
+        <Label fx:id="welcomeLabel" text="Welcome, User!" />
+    </children>
+    <top>
+        <HBox spacing="10">
+            <padding>
+                <Insets top="10" right="10" bottom="10" left="10"/>
+            </padding>
+<!--            <Button text="Import Photo" onAction="#handleImport"/>-->
+<!--            <Button text="Add Tag" onAction="#handleAddTag"/>-->
+<!--            <Button text="Remove Tag" onAction="#handleRemoveTag"/>-->
+            <Button text="Logout" onAction="#handleLogout"/>
+            <Button text="Edit My Tag Types" onAction="#handleEditTagTypes"/>
+        </HBox>
+    </top>
+    <center>
+        <VBox spacing="10">
+            <Label text="Albums"/>
+            <ListView fx:id="albumList"/>
+            <Button text="Create Album" onAction="#handleCreateAlbum"/>
+            <Button text="Delete Album" onAction="#handleDeleteAlbum"/>
+            <Button text="Rename Album" onAction="#handleRenameAlbum"/>
+            <Button text="Open Album" onAction="#handleOpenAlbum"/>
+        </VBox>
+    </center>
+
+
+    <bottom>
+        <Label fx:id="statusLabel">
+            <padding>
+                <Insets top="10" right="10" bottom="10" left="10"/>
+            </padding>
+        </Label>
+    </bottom>
+    <padding>
+        <Insets top="20" right="20" bottom="20" left="20" />
+    </padding>
+</BorderPane>
