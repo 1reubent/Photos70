@@ -10,6 +10,7 @@ import javafx.stage.Stage;
 import javafx.util.Pair;
 import view.LoginController;
 import view.UserHomeController;
+import view.AdminHomeController;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -23,12 +24,12 @@ public class Photos extends Application {
   private Scene loginScene;
   private Scene adminHomeScene;
   private Map<String, Pair<Scene, UserHomeController>> userHomeScenes = new HashMap<>();
-  private static String userListFilePath = null; //initialied in start method
+  private static String userListFilePath = null; // initialied in start method
   private Map<String, Object> userData = new HashMap<>();
 
   @Override
   public void start(Stage stage) throws IOException {
-    /*INITIALIZE USERS.DAT */
+    /* INITIALIZE USERS.DAT */
 
     // Get the resource URL for users.dat
     java.net.URL resourceUrl = getClass().getResource("/users.dat");
@@ -45,10 +46,10 @@ public class Photos extends Application {
       userList = loadUserList();
     }
 
-    /*INITIALIZE STOCK USER*/
+    /* INITIALIZE STOCK USER */
     if (!userList.hasUser("stock")) {
       initializeStockPhotos();
-      //print that stcok user has been initialized
+      // print that stcok user has been initialized
       System.out.println("Stock user initialized");
     }
 
@@ -68,11 +69,11 @@ public class Photos extends Application {
     User stock_user = userList.addUser("stock");
     stock_user.addAlbum("stock");
     String[] stockPhotoPaths = {
-            "data/stock1.jpg",
-            "data/stock2.jpg",
-            "data/stock3.jpg",
-            "data/stock4.jpg",
-            "data/stock5.jpg"
+        "data/stock1.jpg",
+        "data/stock2.jpg",
+        "data/stock3.jpg",
+        "data/stock4.jpg",
+        "data/stock5.jpg"
     };
 
     for (String path : stockPhotoPaths) {
@@ -84,7 +85,6 @@ public class Photos extends Application {
       throw new RuntimeException(e);
     }
   }
-
 
   public UserList getUserList() {
     return userList;
@@ -125,14 +125,19 @@ public class Photos extends Application {
     userData.clear();
   }
 
-  //    TODO: Implement the admin home view
-  //      its init method must take the app as a parameter, and the admin user
-  //      need to save admin user to disk
-  //      need to save admin controller and scene.
+  // TODO: Implement the admin home view
+  // its init method must take the app as a parameter, and the admin user
+  // need to save admin user to disk
+  // need to save admin controller and scene.
   public void switchToAdminHomeView(Stage stage) throws IOException {
     if (adminHomeScene == null) {
       FXMLLoader adminHomeLoader = new FXMLLoader(getClass().getResource("/view/admin-home-view.fxml"));
       adminHomeScene = new Scene(adminHomeLoader.load());
+      AdminHomeController adminHomeController = adminHomeLoader.getController();
+
+      // pass the user list
+      adminHomeController.init(this, userList);
+
     }
     stage.setScene(adminHomeScene);
   }
@@ -146,7 +151,7 @@ public class Photos extends Application {
     saveUserList();
   }
 
-  /* PERSISTENCE METHODS*/
+  /* PERSISTENCE METHODS */
   private void saveUserList() throws IOException {
     try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(userListFilePath))) {
       out.writeObject(userList);
