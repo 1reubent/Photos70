@@ -44,7 +44,7 @@
   - [x] User logout
   - [x] Application quit
 - [x] On startup, **load** existing data from disk.
-- [ ] Save user photos only as **file paths**, do **not** copy user images to workspace.
+- [X] Save user photos only as **file paths**, do **not** copy user images to workspace.
 - [x] Store stock photos in `/data/` directory.
 
 ---
@@ -78,15 +78,15 @@
 - [x] Create new album (unique per user).
 - [ ] Rename album. (still need to check that it works)
 - [ ] Delete album. (still need to check that it works)
-- [ ] Open album to see photo thumbnails and captions.
+- [x] Open album to see photo thumbnails and captions.
 
 ### Photo Management (inside album view)
 - [x] Add photo (select from file system).
-- [ ] Ensure:
+- [x] Ensure:
   - [x] For stock photos: from `/data/`
-  - [ ] For user photos: path is stored, photo not copied
+  - [x] For user photos: path is stored, photo not copied
 - [ ] Remove photo.
-- [ ] Caption / recaption photo.
+- [x] Caption / recaption photo.
 - [ ] View photo:
   - [x] Show full image.
   - [ ] Show caption.
@@ -151,7 +151,7 @@
 - [x] **Quit application:**
   - [x] Ensure data is saved.
   - [x] Application closes cleanly.
-- [ ] Prevent duplicate album names **within user**.
+- [x] Prevent duplicate album names **within user**.
 - [ ] Allow duplicate album names **across users**.
 - [ ] Allow multi-user operation:
   - [ ] After logout, allow new user login without app restart.
