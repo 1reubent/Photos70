@@ -20,8 +20,10 @@ import java.io.File;
 import java.io.IOException;
 
 public class AlbumController {
-  @FXML private ListView<String> photoList;
-  @FXML private Label statusLabel;
+  @FXML
+  private ListView<Photo> photoList;
+  @FXML
+  private Label statusLabel;
   private Album album;
   private User user;
   private Photos app;
@@ -35,9 +37,33 @@ public class AlbumController {
 
   private void populatePhotos() {
     photoList.getItems().clear();
-    for (Photo photo : album.getPhotos()) {
-      photoList.getItems().add(photo.getPath());
-    }
+    photoList.getItems().addAll(album.getPhotos());
+    // Set custom cell factory to display photo thumbnails and captions
+
+    //TODO: figure out what this does. what is a cell factory? what is a list cell?
+    photoList.setCellFactory(listView -> new ListCell<>() {
+      private final ImageView imageView = new ImageView();
+
+      @Override
+      protected void updateItem(Photo photo, boolean empty) {
+        super.updateItem(photo, empty);
+        if (empty || photo == null) {
+          setText(null);
+          setGraphic(null);
+        } else {
+          // Set thumbnail
+          File file = new File(photo.getPath());
+          Image image = new Image(file.toURI().toString(), 50, 50, true, true);
+          imageView.setImage(image);
+
+          // Set caption and filename
+          String filename = file.getName();
+          String caption = photo.getCaption();
+          setText(String.format("%s (Caption: %s)", filename, !caption.isEmpty() ? caption : "No caption"));
+          setGraphic(imageView);
+        }
+      }
+    });
   }
 
   @FXML
@@ -57,12 +83,12 @@ public class AlbumController {
 
   @FXML
   public void handleRemovePhoto() {
-    String selectedPhoto = photoList.getSelectionModel().getSelectedItem();
+    Photo selectedPhoto = photoList.getSelectionModel().getSelectedItem();
     if (selectedPhoto != null) {
-      album.removePhoto(album.getPhoto(selectedPhoto));
+      album.removePhoto(selectedPhoto);
       populatePhotos();
-      statusLabel.setText("Photo removed: " + selectedPhoto);
-    }else {
+      statusLabel.setText("Photo removed: " + selectedPhoto.getCaption());
+    } else {
       Alert alert = new Alert(Alert.AlertType.WARNING, "No photo selected!");
       alert.showAndWait();
     }
@@ -70,19 +96,18 @@ public class AlbumController {
 
   @FXML
   public void handleCaptionPhoto() {
-    String selectedPhoto = photoList.getSelectionModel().getSelectedItem();
+    Photo selectedPhoto = photoList.getSelectionModel().getSelectedItem();
     if (selectedPhoto != null) {
       TextInputDialog dialog = new TextInputDialog();
       dialog.setTitle("Caption Photo");
       dialog.setHeaderText("Enter caption:");
       dialog.setContentText("Caption:");
       dialog.showAndWait().ifPresent(caption -> {
-        Photo photo = new Photo(selectedPhoto);
-        photo.setCaption(caption);
+        selectedPhoto.setCaption(caption);
         populatePhotos();
         statusLabel.setText("Caption added: " + caption);
       });
-    }else{
+    } else {
       Alert alert = new Alert(Alert.AlertType.WARNING, "No photo selected!");
       alert.showAndWait();
     }
@@ -90,12 +115,9 @@ public class AlbumController {
 
   @FXML
   public void handleDisplayPhoto() {
-    String selectedPhoto = photoList.getSelectionModel().getSelectedItem();
+    Photo selectedPhoto = photoList.getSelectionModel().getSelectedItem();
     if (selectedPhoto != null) {
-      // Display photo in a separate area with its details
-      // Display photo in a separate area with its details
-      String photoPath = selectedPhoto;
-      Image image = new Image(new File(photoPath).toURI().toString());
+      Image image = new Image(new File(selectedPhoto.getPath()).toURI().toString());
       ImageView imageView = new ImageView(image);
       imageView.setFitWidth(400);
       imageView.setPreserveRatio(true);
@@ -107,7 +129,7 @@ public class AlbumController {
       stage.setScene(scene);
       stage.setTitle("Photo Viewer");
       stage.show();
-    }else{
+    } else {
       Alert alert = new Alert(Alert.AlertType.WARNING, "No photo selected!");
       alert.showAndWait();
     }
@@ -115,13 +137,11 @@ public class AlbumController {
 
   @FXML
   public void handleAddTag() {
-    // Add tag to photo
-    // Placeholder for tag adding logic
-    String selectedPhoto = photoList.getSelectionModel().getSelectedItem();
+    Photo selectedPhoto = photoList.getSelectionModel().getSelectedItem();
     if (selectedPhoto != null) {
       Alert alert = new Alert(Alert.AlertType.INFORMATION, "Add Tag - Coming Soon!");
       alert.showAndWait();
-    }else{
+    } else {
       Alert alert = new Alert(Alert.AlertType.WARNING, "No photo selected!");
       alert.showAndWait();
     }
@@ -129,13 +149,11 @@ public class AlbumController {
 
   @FXML
   public void handleRemoveTag() {
-    // Remove tag from photo
-    // Placeholder for tag adding logic
-    String selectedPhoto = photoList.getSelectionModel().getSelectedItem();
+    Photo selectedPhoto = photoList.getSelectionModel().getSelectedItem();
     if (selectedPhoto != null) {
-      Alert alert = new Alert(Alert.AlertType.INFORMATION, "remove Tag - Coming Soon!");
+      Alert alert = new Alert(Alert.AlertType.INFORMATION, "Remove Tag - Coming Soon!");
       alert.showAndWait();
-    }else{
+    } else {
       Alert alert = new Alert(Alert.AlertType.WARNING, "No photo selected!");
       alert.showAndWait();
     }
@@ -143,13 +161,11 @@ public class AlbumController {
 
   @FXML
   public void handleCopyPhoto() {
-    // Copy photo to another album
-    // Placeholder for tag adding logic
-    String selectedPhoto = photoList.getSelectionModel().getSelectedItem();
+    Photo selectedPhoto = photoList.getSelectionModel().getSelectedItem();
     if (selectedPhoto != null) {
       Alert alert = new Alert(Alert.AlertType.INFORMATION, "Copy Photo - Coming Soon!");
       alert.showAndWait();
-    }else{
+    } else {
       Alert alert = new Alert(Alert.AlertType.WARNING, "No photo selected!");
       alert.showAndWait();
     }
@@ -157,13 +173,11 @@ public class AlbumController {
 
   @FXML
   public void handleMovePhoto() {
-    // Move photo to another album
-    // Placeholder for tag adding logic
-    String selectedPhoto = photoList.getSelectionModel().getSelectedItem();
+    Photo selectedPhoto = photoList.getSelectionModel().getSelectedItem();
     if (selectedPhoto != null) {
       Alert alert = new Alert(Alert.AlertType.INFORMATION, "Move Photo - Coming Soon!");
       alert.showAndWait();
-    }else{
+    } else {
       Alert alert = new Alert(Alert.AlertType.WARNING, "No photo selected!");
       alert.showAndWait();
     }
@@ -171,19 +185,16 @@ public class AlbumController {
 
   @FXML
   public void handleSlideshow() {
-    // Implement manual slideshow
-    // Placeholder for tag adding logic
     Alert alert = new Alert(Alert.AlertType.INFORMATION, "Slideshow - Coming Soon!");
     alert.showAndWait();
   }
 
   @FXML
   public void handleSearchPhotos() {
-    // Implement search functionality
-    // Placeholder for tag adding logic
     Alert alert = new Alert(Alert.AlertType.INFORMATION, "Search Photos - Coming Soon!");
     alert.showAndWait();
   }
+
   @FXML
   public void handleBack() {
     try {

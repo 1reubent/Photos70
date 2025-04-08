@@ -22,7 +22,12 @@ public class LoginController {
     this.app = app;
     System.out.println("LoginController Stock albums: " + app.getUserList().getUser("stock").getAlbums().keySet() );
   }
-
+  @FXML
+  private void handleEnterKey(javafx.scene.input.KeyEvent event) {
+    if (event.getCode() == javafx.scene.input.KeyCode.ENTER) {
+      handleLogin();
+    }
+  }
   @FXML
   private void handleLogin() {
     String username = usernameField.getText().trim();

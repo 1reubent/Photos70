@@ -18,9 +18,7 @@ import java.io.IOException;
 
 public class UserHomeController {
   @FXML
-  private ListView<String> albumList;
-  @FXML
-  private ListView<String> photoList;
+  private ListView<Album> albumList;
   @FXML
   private Label statusLabel;
   private User user;
@@ -40,14 +38,26 @@ public class UserHomeController {
   public void populateAlbums() {
     System.out.println(user.getUsername());
     System.out.println(user.getAlbums().keySet());
+
     albumList.getItems().clear();
-    for (Album album : user.getAlbums().values()) {
-      albumList.getItems().add(String.format("Name: %s | %d photos | Date Range: %s",
-              album.getName(),
-              album.getPhotoCount(),
-              album.getDateRange()));
-    }
+    albumList.getItems().addAll(user.getAlbums().values());
     System.out.println("Albums populated: " + albumList.getItems());
+
+    // TODO: figure out what this does. what is a cell factory? what is a list cell?
+    albumList.setCellFactory(listView -> new ListCell<>() {
+      @Override
+      protected void updateItem(Album album, boolean empty) {
+        super.updateItem(album, empty);
+        if (empty || album == null) {
+          setText(null);
+        } else {
+          setText(String.format("Name: %s | %d photos | Date Range: %s",
+                  album.getName(),
+                  album.getPhotoCount(),
+                  album.getDateRange()));
+        }
+      }
+    });
   }
 
   @FXML
@@ -70,37 +80,32 @@ public class UserHomeController {
     dialog.setHeaderText("Enter album name:");
     dialog.setContentText("Name:");
     dialog.showAndWait().ifPresent(name -> {
-      if(!user.addAlbum(name)){
-        showError("Album already exists!");
+      if (!user.addAlbum(name)) {
+        showError("Album name already exists!");
         return;
-      };
+      }
       populateAlbums();
     });
   }
 
   @FXML
   public void handleDeleteAlbum() {
-    String selectedAlbum = albumList.getSelectionModel().getSelectedItem();
+    Album selectedAlbum = albumList.getSelectionModel().getSelectedItem();
     if (selectedAlbum != null) {
-      String albumName = selectedAlbum.split(" ")[1];
-      // Check if the album is empty
-      Album album = user.getAlbum(albumName);
-      if (album != null && album.getPhotoCount() > 0) {
+      if (selectedAlbum.getPhotoCount() > 0) {
         Alert alert = new Alert(Alert.AlertType.WARNING, "Album is not empty! Cannot delete.");
         alert.showAndWait();
         return;
       }
-      // Confirm deletion
       Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Are you sure you want to delete this album?");
       alert.setTitle("Delete Album");
       alert.showAndWait().ifPresent(response -> {
         if (response == ButtonType.OK) {
-          user.deleteAlbum(albumName);
+          user.deleteAlbum(selectedAlbum.getName());
           populateAlbums();
         }
       });
     } else {
-      // No album selected
       Alert alert = new Alert(Alert.AlertType.WARNING, "No album selected!");
       alert.setTitle("Delete Album");
       alert.setHeaderText("No album selected.");
@@ -111,15 +116,14 @@ public class UserHomeController {
 
   @FXML
   public void handleRenameAlbum() {
-    String selectedAlbum = albumList.getSelectionModel().getSelectedItem();
+    Album selectedAlbum = albumList.getSelectionModel().getSelectedItem();
     if (selectedAlbum != null) {
-      String oldName = selectedAlbum.split(" ")[1];
-      TextInputDialog dialog = new TextInputDialog(oldName);
+      TextInputDialog dialog = new TextInputDialog(selectedAlbum.getName());
       dialog.setTitle("Rename Album");
       dialog.setHeaderText("Enter new album name:");
       dialog.setContentText("Name:");
       dialog.showAndWait().ifPresent(newName -> {
-        user.renameAlbum(oldName, newName);
+        user.renameAlbum(selectedAlbum.getName(), newName);
         populateAlbums();
       });
     }
@@ -127,13 +131,9 @@ public class UserHomeController {
 
   @FXML
   public void handleOpenAlbum() {
-    String selectedAlbum = albumList.getSelectionModel().getSelectedItem();
+    Album selectedAlbum = albumList.getSelectionModel().getSelectedItem();
     if (selectedAlbum != null) {
-      String albumName = selectedAlbum.split(" ")[1];
-      Album album = user.getAlbums().get(albumName);
-      if (album != null) {
-        openAlbumView(album);
-      }
+      openAlbumView(selectedAlbum);
     } else {
       Alert alert = new Alert(Alert.AlertType.WARNING, "No album selected!");
       alert.showAndWait();

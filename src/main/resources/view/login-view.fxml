@@ -7,7 +7,7 @@
 <VBox alignment="CENTER" spacing="15.0" xmlns:fx="http://javafx.com/fxml" fx:controller="view.LoginController">
     <Label text="Photo Album Login" style="-fx-font-size: 18px;"/>
 
-    <TextField fx:id="usernameField" promptText="Username"/>
+    <TextField fx:id="usernameField" promptText="Username" onKeyPressed="#handleEnterKey"/>
 
     <Button text="Login" onAction="#handleLogin"/>
 
