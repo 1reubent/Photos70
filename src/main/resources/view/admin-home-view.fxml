@@ -23,7 +23,8 @@
         <VBox spacing="10">
             <Label text="Users"/>
             <ListView fx:id="UserList"/>
-            <!-- <Button text="Create User" onAction="#handleCreateUser"/> -->
+            <TextField fx:id="usernameField" promptText="Enter username" />
+            <Button text="Create User" onAction="#handleCreateUser" />
             <!-- <Button text="Delete User" onAction="#handleDeleteUser"/> -->
         </VBox>
     </center>
