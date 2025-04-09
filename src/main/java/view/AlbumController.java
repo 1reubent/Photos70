@@ -111,6 +111,7 @@ public class AlbumController {
 
   @FXML
   public void handleRemovePhoto() {
+    //TODO: are you sure you want to remove this photo from the album?
     Photo selectedPhoto = photoList.getSelectionModel().getSelectedItem();
     if (selectedPhoto != null) {
       album.removePhoto(selectedPhoto);
@@ -146,58 +147,21 @@ public class AlbumController {
   public void handleDisplayPhoto() {
     Photo selectedPhoto = photoList.getSelectionModel().getSelectedItem();
     if (selectedPhoto != null) {
-      Image image = new Image(new File(selectedPhoto.getPath()).toURI().toString());
-      ImageView imageView = new ImageView(image);
-      imageView.setFitWidth(600);
-      imageView.setPreserveRatio(true);
+      try {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/photo-details-dialog.fxml"));
+        ScrollPane root = loader.load();
 
-      // Create styled labels for photo details
-      Label titleLabel = new Label("Photo Details");
-      titleLabel.setStyle("-fx-font-size: 16px; -fx-font-weight: bold;");
+        PhotoDetailsController controller = loader.getController();
+        controller.init(selectedPhoto);
 
-      Label pathLabel = new Label("Path: " + selectedPhoto.getPath());
-      Label captionLabel = new Label("Caption: " + selectedPhoto.getCaption());
-      Label dateLabel = new Label("Date Taken: " + selectedPhoto.getDateTaken());
-
-      // Create tags display with better formatting
-      StringBuilder tagsText = new StringBuilder();
-      if (selectedPhoto.getTags().isEmpty()) {
-        tagsText.append("No tags");
-      } else {
-        selectedPhoto.getTags().forEach(tag ->
-                tagsText.append("• ").append(tag.toString()).append("\n")
-        );
+        Stage stage = new Stage();
+        Scene scene = new Scene(root);
+        stage.setScene(scene);
+        stage.setTitle("Photo Details - " + new File(selectedPhoto.getPath()).getName());
+        stage.show();
+      } catch (IOException e) {
+        e.printStackTrace();
       }
-      Label tagsTitle = new Label("Tags:");
-      tagsTitle.setStyle("-fx-font-weight: bold;");
-      Label tagsLabel = new Label(tagsText.toString());
-
-      // Create layout with better organization
-      VBox detailsBox = new VBox(8,
-              titleLabel,
-              new Separator(),
-              pathLabel,
-              captionLabel,
-              dateLabel,
-              new Separator(),
-              tagsTitle,
-              tagsLabel
-      );
-      detailsBox.setStyle("-fx-background-color: #f5f5f5; -fx-padding: 15;");
-      detailsBox.setPadding(new Insets(15));
-
-      // Main container
-      VBox container = new VBox(15);
-      container.getChildren().addAll(imageView, detailsBox);
-      container.setPadding(new Insets(20));
-      container.setStyle("-fx-background-color: white;");
-
-      // Configure stage
-      Stage stage = new Stage();
-      Scene scene = new Scene(container);
-      stage.setScene(scene);
-      stage.setTitle("Photo Details - " + new File(selectedPhoto.getPath()).getName());
-      stage.show();
     } else {
       Alert alert = new Alert(Alert.AlertType.WARNING, "No photo selected!");
       alert.showAndWait();

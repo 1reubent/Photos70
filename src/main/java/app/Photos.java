@@ -24,7 +24,7 @@ public class Photos extends Application {
   private Scene loginScene;
   private Scene adminHomeScene;
   private Map<String, Pair<Scene, UserHomeController>> userHomeScenes = new HashMap<>();
-  private static String userListFilePath = null; // initialied in start method
+  private static String userListFilePath = null; // initialized in start method
   private Map<String, Object> userData = new HashMap<>();
 
   @Override
@@ -49,7 +49,7 @@ public class Photos extends Application {
     /* INITIALIZE STOCK USER */
     if (!userList.hasUser("stock")) {
       initializeStockPhotos();
-      // print that stcok user has been initialized
+      // print that stock user has been initialized
       System.out.println("Stock user initialized");
     }
 
@@ -108,23 +108,6 @@ public class Photos extends Application {
     stage.setScene(userHomeScenes.get(username).getKey());
   }
 
-  /* PUBLIC METHODS TO MANAGE USER DATA */
-  public void addUserData(String key, Object value) {
-    userData.put(key, value);
-  }
-
-  public Object getUserData(String key) {
-    return userData.get(key);
-  }
-
-  public List<String> getUserDataKeys() {
-    return new ArrayList<>(userData.keySet());
-  }
-
-  public void clearUserData() {
-    userData.clear();
-  }
-
   // TODO: Implement the admin home view
   // its init method must take the app as a parameter, and the admin user
   // need to save admin user to disk
@@ -151,6 +134,22 @@ public class Photos extends Application {
     saveUserList();
   }
 
+  /* PUBLIC METHODS TO MANAGE USER DATA */
+  public void addUserData(String key, Object value) {
+    userData.put(key, value);
+  }
+
+  public Object getUserData(String key) {
+    return userData.get(key);
+  }
+
+  public List<String> getUserDataKeys() {
+    return new ArrayList<>(userData.keySet());
+  }
+
+  public void clearUserData() {
+    userData.clear();
+  }
   /* PERSISTENCE METHODS */
   private void saveUserList() throws IOException {
     try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(userListFilePath))) {
