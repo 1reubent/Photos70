@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import javafx.geometry.Insets?>
+<DialogPane xmlns:fx="http://javafx.com/fxml" fx:controller="view.EditTagTypesController">
+    <content>
+        <GridPane hgap="10" vgap="10">
+            <padding>
+                <Insets top="20" right="20" bottom="20" left="20"/>
+            </padding>
+            <Label text="Existing Tag Types:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+            <ListView fx:id="tagTypeList" GridPane.rowIndex="1" GridPane.columnIndex="0" GridPane.columnSpan="2"/>
+            <Label text="New Tag Type:" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+            <TextField fx:id="newTagTypeField" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+            <CheckBox fx:id="multiValueCheckBox" text="Allow multiple values" GridPane.rowIndex="3"
+                      GridPane.columnIndex="1"/>
+            <Button text="Add Tag Type" fx:id="addTagTypeButton" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
+            <Button text="Remove Selected Tag Type" fx:id="removeTagTypeButton" GridPane.rowIndex="4"
+                    GridPane.columnIndex="1"/>
+        </GridPane>
+
+    </content>
+</DialogPane>

@@ -86,18 +86,24 @@ public class AlbumController {
         return;
       }
       //if photo already exists in an album, add that same photo to this album
+      Photo photoToAdd = null;
+
+      // Check if the photo exists in another album
       for (Album other_album : user.getAlbums()) {
         if (other_album.getPhoto(photoPath) != null) {
-          //add this photo to the album
           System.out.println("Photo already exists in another album, adding to this album.");
-          album.addPhoto(other_album.getPhoto(photoPath));
-          populatePhotos();
-          statusLabel.setText("Photo added: " + selectedFile.getName());
-          return;
+          photoToAdd = other_album.getPhoto(photoPath);
+          break;
         }
       }
-      //if photo does not exist in any album, create a new photo and add it to the album
-      album.addPhoto(new Photo(selectedFile.getAbsolutePath()));
+
+      // If the photo does not exist in any album, create a new photo
+      if (photoToAdd == null) {
+        photoToAdd = new Photo(selectedFile.getAbsolutePath());
+      }
+
+      // Add the photo to the album and update UI
+      album.addPhoto(photoToAdd);
       populatePhotos();
       statusLabel.setText("Photo added: " + selectedFile.getName());
     }
@@ -135,6 +141,7 @@ public class AlbumController {
     }
   }
 
+  //  TODO: move to a new fxml
   @FXML
   public void handleDisplayPhoto() {
     Photo selectedPhoto = photoList.getSelectionModel().getSelectedItem();
@@ -197,7 +204,7 @@ public class AlbumController {
     }
   }
 
-  //TODO: problems
+  //TODO: move to a new fxml
   @FXML
   public void handleAddTag() {
     Photo selectedPhoto = photoList.getSelectionModel().getSelectedItem();
@@ -256,7 +263,7 @@ public class AlbumController {
               Alert alert = new Alert(Alert.AlertType.ERROR, "Tag type already exists!");
               alert.showAndWait();
             }
-          }else{
+          } else {
             Alert alert = new Alert(Alert.AlertType.WARNING, "Tag type name cannot be empty!");
             alert.showAndWait();
           }

@@ -71,95 +71,22 @@ public class UserHomeController {
   }
   @FXML
   public void handleEditTagTypes() {
-    Dialog<ButtonType> dialog = new Dialog<>();
-    dialog.setTitle("Edit My Tag Types");
-    dialog.setHeaderText("Manage your tag types");
+    try {
+      FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/edit-tag-types-dialog.fxml"));
+      DialogPane dialogPane = loader.load();
 
-    // Create the form content
-    GridPane grid = new GridPane();
-    grid.setHgap(10);
-    grid.setVgap(10);
-    grid.setPadding(new Insets(20, 150, 10, 10));
+      EditTagTypesController controller = loader.getController();
+      controller.init(user);
 
-    ListView<String> tagTypeList = new ListView<>();
-    tagTypeList.getItems().addAll(user.getTagTypes().keySet());
-    tagTypeList.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-
-    TextField newTagTypeField = new TextField();
-    CheckBox multiValueCheckBox = new CheckBox("Allow multiple values");
-    Button addTagTypeButton = new Button("Add Tag Type");
-    Button removeTagTypeButton = new Button("Remove Selected Tag Type");
-
-    grid.add(new Label("Existing Tag Types:"), 0, 0);
-    grid.add(tagTypeList, 0, 1, 2, 1);
-    grid.add(new Label("New Tag Type:"), 0, 2);
-    grid.add(newTagTypeField, 1, 2);
-    grid.add(multiValueCheckBox, 1, 3);
-    grid.add(addTagTypeButton, 0, 4);
-    grid.add(removeTagTypeButton, 1, 4);
-
-    // Add functionality to buttons
-    addTagTypeButton.setOnAction(e -> {
-      String newTagType = newTagTypeField.getText().trim();
-      if (!newTagType.isEmpty()) {
-        if (user.addTagType(newTagType, multiValueCheckBox.isSelected())) {
-          tagTypeList.getItems().clear();
-          tagTypeList.getItems().addAll(user.getTagTypes().keySet());
-          newTagTypeField.clear();
-          multiValueCheckBox.setSelected(false);
-        } else {
-          Alert alert = new Alert(Alert.AlertType.ERROR, "Tag type already exists!");
-          alert.showAndWait();
-        }
-      } else {
-        Alert alert = new Alert(Alert.AlertType.WARNING, "Tag type name cannot be empty!");
-        alert.showAndWait();
-      }
-    });
-
-    removeTagTypeButton.setOnAction(e -> {
-      String selectedTagType = tagTypeList.getSelectionModel().getSelectedItem();
-      if (selectedTagType != null) {
-        //cannot remove location or people tags
-        if (selectedTagType.equalsIgnoreCase("location") || selectedTagType.equalsIgnoreCase("people")) {
-          Alert alert = new Alert(Alert.AlertType.ERROR, "Cannot remove default tag types: location and people.");
-          alert.showAndWait();
-          return;
-        }
-        Alert confirmationAlert = new Alert(Alert.AlertType.CONFIRMATION);
-        confirmationAlert.setTitle("Remove Tag Type");
-        confirmationAlert.setHeaderText("Are you sure you want to remove this tag type?");
-        confirmationAlert.setContentText("This will remove all tags of this type from all your photos.");
-        confirmationAlert.showAndWait().ifPresent(response -> {
-          if (response == ButtonType.OK) {
-            // Remove the tag type
-            if(user.removeTagType(selectedTagType)) {
-              tagTypeList.getItems().remove(selectedTagType);
-
-              // Remove all tags of this type from all photos
-              user.getAlbums().forEach(album -> {
-                album.getPhotos().forEach(photo -> {
-                  photo.getTags().removeIf(tag -> tag.getName().equalsIgnoreCase(selectedTagType));
-                });
-              });
-
-              Alert successAlert = new Alert(Alert.AlertType.INFORMATION, "Tag type and associated tags removed successfully.");
-              successAlert.showAndWait();
-            }else{
-              Alert errorAlert = new Alert(Alert.AlertType.ERROR, "Failed to remove tag type.");
-              errorAlert.showAndWait();
-            }
-          }
-        });
-      } else {
-        Alert alert = new Alert(Alert.AlertType.WARNING, "No tag type selected!");
-        alert.showAndWait();
-      }
-    });
-
-    dialog.getDialogPane().setContent(grid);
-    dialog.getDialogPane().getButtonTypes().addAll(ButtonType.CLOSE);
-    dialog.showAndWait();
+      Dialog<ButtonType> dialog = new Dialog<>();
+      dialog.setDialogPane(dialogPane);
+      dialog.setTitle("Edit My Tag Types");
+      //add close button
+      dialog.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
+      dialog.showAndWait();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
   }
   private void showError(String message) {
     Alert alert = new Alert(Alert.AlertType.ERROR, message);
@@ -242,6 +169,7 @@ public class UserHomeController {
       controller.init(app, user, album);
       Stage stage = (Stage) albumList.getScene().getWindow();
       stage.setScene(scene);
+      stage.setTitle("Album: " + album.getName()); // Set the title to the album's nam
     } catch (IOException e) {
       e.printStackTrace();
     }
