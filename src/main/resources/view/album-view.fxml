@@ -4,28 +4,33 @@
 <?import javafx.geometry.Insets?>
 <BorderPane xmlns:fx="http://javafx.com/fxml" fx:controller="view.AlbumController">
     <top>
-        <HBox spacing="10">
+        <HBox>
+            <Label fx:id="albumNameLabel" text="Photos in "/>
             <padding>
-                <Insets top="10" right="10" bottom="10" left="10"/>
+                <Insets bottom="10"/>
             </padding>
-            <Button text="Back" onAction="#handleBack"/>
-            <Button text="Add Photo" onAction="#handleAddPhoto"/>
-            <Button text="Remove Photo" onAction="#handleRemovePhoto"/>
-            <Button text="Caption Photo" onAction="#handleCaptionPhoto"/>
-            <Button text="Display Photo" onAction="#handleDisplayPhoto"/>
-            <Button text="Add Tag" onAction="#handleAddTag"/>
-            <Button text="Remove Tag" onAction="#handleRemoveTag"/>
-            <Button text="Copy Photo" onAction="#handleCopyPhoto"/>
-            <Button text="Move Photo" onAction="#handleMovePhoto"/>
-            <Button text="Slideshow" onAction="#handleSlideshow"/>
-            <Button text="Search Photos" onAction="#handleSearchPhotos"/>
         </HBox>
     </top>
     <center>
-        <VBox spacing="10">
-            <Label text="Photos"/>
-            <ListView fx:id="photoList"/>
-        </VBox>
+        <HBox spacing="10">
+            <ListView fx:id="photoList" HBox.hgrow="ALWAYS"/>
+            <VBox spacing="10">
+                <padding>
+                    <Insets right="10" bottom="10" left="10"/>
+                </padding>
+                <Button text="Back" onAction="#handleBack"/>
+                <Button text="Add Photo" onAction="#handleAddPhoto"/>
+                <Button text="Remove Photo" onAction="#handleRemovePhoto"/>
+                <Button text="Caption Photo" onAction="#handleCaptionPhoto"/>
+                <Button text="Display Photo" onAction="#handleDisplayPhoto"/>
+                <Button text="Add Tag" onAction="#handleAddTag"/>
+                <Button text="Remove Tag" onAction="#handleRemoveTag"/>
+                <Button text="Copy Photo" onAction="#handleCopyPhoto"/>
+                <Button text="Move Photo" onAction="#handleMovePhoto"/>
+                <Button text="Slideshow" onAction="#handleSlideshow"/>
+                <Button text="Search Photos" onAction="#handleSearchPhotos"/>
+            </VBox>
+        </HBox>
     </center>
     <bottom>
         <Label fx:id="statusLabel">

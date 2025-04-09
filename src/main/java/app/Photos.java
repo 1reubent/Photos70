@@ -106,6 +106,8 @@ public class Photos extends Application {
       userHomeScenes.get(username).getValue().populateAlbums();
     }
     stage.setScene(userHomeScenes.get(username).getKey());
+    stage.setTitle("Photo Album " + "(" + username + ")" ); // Set the title to the username
+
   }
 
   // TODO: Implement the admin home view

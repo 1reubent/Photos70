@@ -69,6 +69,7 @@ public class UserHomeController {
     app.clearUserData();
     app.switchToLoginView((Stage) albumList.getScene().getWindow());
   }
+
   @FXML
   public void handleEditTagTypes() {
     try {
@@ -88,6 +89,7 @@ public class UserHomeController {
       e.printStackTrace();
     }
   }
+
   private void showError(String message) {
     Alert alert = new Alert(Alert.AlertType.ERROR, message);
     alert.showAndWait();
@@ -164,12 +166,12 @@ public class UserHomeController {
   private void openAlbumView(Album album) {
     try {
       FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/album-view.fxml"));
-      Scene scene = new Scene(loader.load());
+      Scene scene = new Scene(loader.load(), 640, 650);
       AlbumController controller = loader.getController();
       controller.init(app, user, album);
       Stage stage = (Stage) albumList.getScene().getWindow();
       stage.setScene(scene);
-      stage.setTitle("Album: " + album.getName()); // Set the title to the album's nam
+      stage.setTitle("Viewing Album: " + album.getName()); // Set the title to the album's nam
     } catch (IOException e) {
       e.printStackTrace();
     }

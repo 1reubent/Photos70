@@ -27,14 +27,18 @@ public class AlbumController {
   private ListView<Photo> photoList;
   @FXML
   private Label statusLabel;
+  @FXML
+  private Label albumNameLabel;
   private Album album;
   private User user;
   private Photos app;
 
   public void init(Photos app, User user, Album album) {
+    this.app = app;
     this.user = user;
     this.album = album;
-    this.app = app;
+    albumNameLabel.setText("Photos in album: " + album.getName());
+
     populatePhotos();
   }
 
@@ -142,7 +146,6 @@ public class AlbumController {
     }
   }
 
-  //  TODO: move to a new fxml
   @FXML
   public void handleDisplayPhoto() {
     Photo selectedPhoto = photoList.getSelectionModel().getSelectedItem();
@@ -181,58 +184,16 @@ public class AlbumController {
       GridPane grid = new GridPane();
       grid.setHgap(10);
       grid.setVgap(10);
-      grid.setPadding(new Insets(20, 150, 10, 10));
+      grid.setPadding(new Insets(20, 10, 10, 10));
 
       ComboBox<String> tagTypeCombo = new ComboBox<>();
       tagTypeCombo.getItems().addAll(user.getTagTypes().keySet());
       TextField valueField = new TextField();
-      Button createTagButton = new Button("Create New Tag Type");
 
       grid.add(new Label("Tag Type:"), 0, 0);
       grid.add(tagTypeCombo, 1, 0);
-      grid.add(createTagButton, 2, 0);
       grid.add(new Label("Value:"), 0, 1);
       grid.add(valueField, 1, 1);
-
-      createTagButton.setOnAction(e -> {
-        Dialog<ButtonType> newTagDialog = new Dialog<>();
-        newTagDialog.setTitle("Create New Tag Type");
-        newTagDialog.setHeaderText("Create a new tag type");
-
-        GridPane newTagGrid = new GridPane();
-        newTagGrid.setHgap(10);
-        newTagGrid.setVgap(10);
-        newTagGrid.setPadding(new Insets(20, 150, 10, 10));
-
-        TextField nameField = new TextField();
-        CheckBox multiValueCheckBox = new CheckBox("Allow multiple values");
-
-        newTagGrid.add(new Label("Tag Name:"), 0, 0);
-        newTagGrid.add(nameField, 1, 0);
-        newTagGrid.add(multiValueCheckBox, 1, 1);
-
-        newTagDialog.getDialogPane().setContent(newTagGrid);
-        newTagDialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
-
-        Optional<ButtonType> newTagResult = newTagDialog.showAndWait();
-        if (newTagResult.isPresent() && newTagResult.get() == ButtonType.OK) {
-          String newTagName = nameField.getText().trim();
-          if (!newTagName.isEmpty()) {
-            //TODO: does this check if the tag type already exists?
-            if (user.addTagType(newTagName, multiValueCheckBox.isSelected())) {
-              tagTypeCombo.getItems().clear();
-              tagTypeCombo.getItems().addAll(user.getTagTypes().keySet());
-              tagTypeCombo.setValue(newTagName);
-            } else {
-              Alert alert = new Alert(Alert.AlertType.ERROR, "Tag type already exists!");
-              alert.showAndWait();
-            }
-          } else {
-            Alert alert = new Alert(Alert.AlertType.WARNING, "Tag type name cannot be empty!");
-            alert.showAndWait();
-          }
-        }
-      });
 
       dialog.getDialogPane().setContent(grid);
       dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
