@@ -96,12 +96,12 @@
 ### Tag Management (inside album view)
 - [x] Predefined tag types (e.g., location, person).
 - [x] Allow user to define new tag types.
-- [ ] Add tag to photo:
-  - [ ] Enforce rules:
-    - [ ] Single value tags (e.g., location).
-    - [ ] Multi-value tags (e.g., person).
-    - [ ] No duplicate tag name+value pairs.
-- [ ] Delete tag from photo.
+- [x] Add tag to photo:
+  - [x] Enforce rules:
+    - [x] Single value tags (e.g., location).
+    - [x] Multi-value tags (e.g., person).
+    - [x] No duplicate tag name+value pairs.
+- [x] Delete tag from photo.
 
 ### Photo Copy/Move (inside album view)
 - [ ] Copy photo to another album (same physical photo).

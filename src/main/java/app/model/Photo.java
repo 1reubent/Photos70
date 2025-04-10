@@ -35,7 +35,11 @@ public class Photo implements Serializable {
 
   public Set<Tag> getTags() { return tags; }
 
-  public void addTag(Tag tag) { tags.add(tag); }
+  public void addTag(Tag tag) {
+    if (!tags.add(tag)) {
+      throw new IllegalStateException("Tag already exists.");
+    }
+  }
 
   public void removeTag(Tag tag) { tags.remove(tag); }
 

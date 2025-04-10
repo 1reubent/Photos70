@@ -116,9 +116,18 @@ public class AlbumController {
     //TODO: are you sure you want to remove this photo from the album?
     Photo selectedPhoto = photoList.getSelectionModel().getSelectedItem();
     if (selectedPhoto != null) {
-      album.removePhoto(selectedPhoto);
-      populatePhotos();
-      statusLabel.setText("Photo removed: " + selectedPhoto.getName());
+      // are you sure you want to remove this photo from the album?
+      Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Are you sure you want to remove this photo from the album?");
+      alert.setTitle("Remove Photo");
+      alert.setHeaderText("Remove Photo");
+      alert.setContentText("Are you sure you want to remove this photo from the album?");
+      Optional<ButtonType> result = alert.showAndWait();
+      if (result.isPresent() && result.get() == ButtonType.OK) {
+        album.removePhoto(selectedPhoto);
+        populatePhotos();
+        statusLabel.setText("Photo removed: " + selectedPhoto.getName());
+      }
+
     } else {
       Alert alert = new Alert(Alert.AlertType.WARNING, "No photo selected!");
       alert.showAndWait();
@@ -169,7 +178,7 @@ public class AlbumController {
     }
   }
 
-  //TODO: move to a new fxml
+
   @FXML
   public void handleAddTag() {
     Photo selectedPhoto = photoList.getSelectionModel().getSelectedItem();
@@ -222,8 +231,33 @@ public class AlbumController {
   public void handleRemoveTag() {
     Photo selectedPhoto = photoList.getSelectionModel().getSelectedItem();
     if (selectedPhoto != null) {
-      Alert alert = new Alert(Alert.AlertType.INFORMATION, "Remove Tag - Coming Soon!");
-      alert.showAndWait();
+      try {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/remove-tag-dialog.fxml"));
+        GridPane root = loader.load();
+
+        RemoveTagDialogController controller = loader.getController();
+        controller.init(selectedPhoto);
+
+        Dialog<ButtonType> dialog = new Dialog<>();
+        dialog.setTitle("Remove Tag");
+        dialog.setHeaderText("Select a tag to remove");
+        dialog.getDialogPane().setContent(root);
+        dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
+
+        Optional<ButtonType> result = dialog.showAndWait();
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+          Tag tagToRemove = controller.getSelectedTag();
+          if (tagToRemove != null) {
+            selectedPhoto.removeTag(tagToRemove);
+            statusLabel.setText("Tag removed: " + tagToRemove);
+          } else {
+            Alert alert = new Alert(Alert.AlertType.WARNING, "No tag selected!");
+            alert.showAndWait();
+          }
+        }
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
     } else {
       Alert alert = new Alert(Alert.AlertType.WARNING, "No photo selected!");
       alert.showAndWait();
