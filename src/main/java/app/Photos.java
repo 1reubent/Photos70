@@ -57,6 +57,8 @@ public class Photos extends Application {
     System.out.println("Users loaded: " + userList.getAllUsers().keySet());
     System.out.println("Stock user and album initialized: " + userList.getUser("stock").getAlbumNames());
 
+    /*TODO: initialize admin user AND make sure it gets saved*/
+
     FXMLLoader fxmlLoader = new FXMLLoader(Photos.class.getResource("/view/login-view.fxml"));
     loginScene = new Scene(fxmlLoader.load(), 320, 240);
     LoginController loginController = fxmlLoader.getController();

@@ -4,12 +4,13 @@
 <?import javafx.geometry.Insets?>
 <BorderPane xmlns:fx="http://javafx.com/fxml" fx:controller="view.AlbumController">
     <top>
-        <HBox>
+        <VBox spacing="10">
+            <Button text="Back" onAction="#handleBack"/>
             <Label fx:id="albumNameLabel" text="Photos in "/>
             <padding>
                 <Insets bottom="10"/>
             </padding>
-        </HBox>
+        </VBox>
     </top>
     <center>
         <HBox spacing="10">
@@ -18,7 +19,7 @@
                 <padding>
                     <Insets right="10" bottom="10" left="10"/>
                 </padding>
-                <Button text="Back" onAction="#handleBack"/>
+
                 <Button text="Add Photo" onAction="#handleAddPhoto"/>
                 <Button text="Remove Photo" onAction="#handleRemovePhoto"/>
                 <Button text="Caption Photo" onAction="#handleCaptionPhoto"/>

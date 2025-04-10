@@ -35,7 +35,7 @@ public class AlbumController {
     this.app = app;
     this.user = user;
     this.album = album;
-    albumNameLabel.setText("Photos in album: " + album.getName());
+    albumNameLabel.setText("Photos in album '" + album.getName() + "'");
 
     populatePhotos();
   }

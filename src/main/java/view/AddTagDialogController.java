@@ -29,7 +29,7 @@ public class AddTagDialogController {
   }
 
   public String getSelectedTagType() {
-    return tagTypeCombo.getValue();
+    return tagTypeCombo.getValue().replace(" (multivalue)", "");
   }
 
   public String getTagValue() {

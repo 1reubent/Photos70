@@ -28,9 +28,11 @@ public class ViewTagTypesController {
     addTagTypeButton.setOnAction(e -> {
       String newTagType = newTagTypeField.getText().trim();
       if (!newTagType.isEmpty()) {
+        //remove (multivalue) from newTagType
+        newTagType = newTagType.replace(" (multivalue)", "");
         if (user.addTagType(newTagType, multiValueCheckBox.isSelected())) {
           tagTypeList.getItems().clear();
-          tagTypeList.getItems().addAll(user.getTagTypeNames());
+          tagTypeList.getItems().addAll(user.getTagTypeNamesWithMultiValue());
           newTagTypeField.clear();
           multiValueCheckBox.setSelected(false);
         } else {
@@ -44,6 +46,8 @@ public class ViewTagTypesController {
     removeTagTypeButton.setOnAction(e -> {
       String selectedTagType = tagTypeList.getSelectionModel().getSelectedItem();
       if (selectedTagType != null) {
+        //remove (multivalue) from selectedTagType
+        selectedTagType = selectedTagType.replace(" (multivalue)", "");
         if (selectedTagType.equalsIgnoreCase("location") || selectedTagType.equalsIgnoreCase("people")) {
           showError("Cannot remove default tag types: location and people.");
           return;
@@ -52,11 +56,13 @@ public class ViewTagTypesController {
         confirmationAlert.setTitle("Remove Tag Type");
         confirmationAlert.setHeaderText("Are you sure you want to remove this tag type?");
         confirmationAlert.setContentText("This will remove all tags of this type from all your photos.");
+        //need final variable for lambda (cannot use selectedTagType directly)
+        String finalSelectedTagType = selectedTagType;
         confirmationAlert.showAndWait().ifPresent(response -> {
           if (response == ButtonType.OK) {
-            if (user.removeTagType(selectedTagType)) {
-              tagTypeList.getItems().remove(selectedTagType);
-              removeTagsFromPhotos(selectedTagType);
+            if (user.removeTagType(finalSelectedTagType)) {
+              tagTypeList.getItems().remove(finalSelectedTagType);
+              removeTagsFromPhotos(finalSelectedTagType);
               showInfo("Tag type and associated tags removed successfully.");
             } else {
               showError("Failed to remove tag type.");
@@ -68,7 +74,6 @@ public class ViewTagTypesController {
       }
     });
   }
-
   private void removeTagsFromPhotos(String tagType) {
     user.getAlbums().forEach(album -> {
       album.getPhotos().forEach(photo -> {
@@ -76,12 +81,10 @@ public class ViewTagTypesController {
       });
     });
   }
-
   private void showInfo(String message) {
     Alert alert = new Alert(Alert.AlertType.INFORMATION, message);
     alert.showAndWait();
   }
-
   private void showError(String message) {
     Alert alert = new Alert(Alert.AlertType.ERROR, message);
     alert.showAndWait();

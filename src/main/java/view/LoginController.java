@@ -22,12 +22,14 @@ public class LoginController {
     this.app = app;
     System.out.println("LoginController Stock albums: " + app.getUserList().getUser("stock").getAlbumNames());
   }
+
   @FXML
   private void handleEnterKey(javafx.scene.input.KeyEvent event) {
     if (event.getCode() == javafx.scene.input.KeyCode.ENTER) {
       handleLogin();
     }
   }
+
   @FXML
   private void handleLogin() {
     String username = usernameField.getText().trim();
@@ -39,6 +41,8 @@ public class LoginController {
     }
 
     if (username.equals("admin")) {
+      //clear error label
+      errorLabel.setText("");
       openAdminView();
       return;
     }
@@ -48,6 +52,7 @@ public class LoginController {
       return;
     }
 
+    errorLabel.setText("");
     openUserView(username);
   }
 
