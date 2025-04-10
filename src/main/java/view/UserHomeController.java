@@ -57,7 +57,7 @@ public class UserHomeController {
   @FXML
   public void handleLogout() {
     // data changes are saved to disk when the app is closed. until then, they are held in memory.
-    app.clearUserData();
+//    app.clearUserData();
     app.switchToLoginView((Stage) albumList.getScene().getWindow());
   }
 
@@ -106,6 +106,14 @@ public class UserHomeController {
   public void handleDeleteAlbum() {
     Album selectedAlbum = albumList.getSelectionModel().getSelectedItem();
     if (selectedAlbum != null) {
+      //cannot delete stock album
+      if (selectedAlbum.getName().equalsIgnoreCase("stock")) {
+        Alert alert = new Alert(Alert.AlertType.WARNING, "Cannot delete stock album!");
+        alert.setTitle("Delete Album");
+        alert.setHeaderText("Stock album cannot be deleted.");
+        alert.showAndWait();
+        return;
+      }
       if (selectedAlbum.getPhotoCount() > 0) {
         Alert alert = new Alert(Alert.AlertType.WARNING, "Album is not empty! Cannot delete.");
         alert.showAndWait();
@@ -132,6 +140,14 @@ public class UserHomeController {
   public void handleRenameAlbum() {
     Album selectedAlbum = albumList.getSelectionModel().getSelectedItem();
     if (selectedAlbum != null) {
+      //cannot rename stock album
+      if (selectedAlbum.getName().equalsIgnoreCase("stock")) {
+        Alert alert = new Alert(Alert.AlertType.WARNING, "Cannot rename stock album!");
+        alert.setTitle("Rename Album");
+        alert.setHeaderText("Stock album cannot be renamed.");
+        alert.showAndWait();
+        return;
+      }
       TextInputDialog dialog = new TextInputDialog(selectedAlbum.getName());
       dialog.setTitle("Rename Album");
       dialog.setHeaderText("Enter new album name:");

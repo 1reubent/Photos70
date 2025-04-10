@@ -14,9 +14,7 @@ import view.UserHomeController;
 import view.AdminHomeController;
 
 import java.io.*;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class Photos extends Application {
@@ -26,39 +24,50 @@ public class Photos extends Application {
   private Scene adminHomeScene;
   private Map<String, Pair<Scene, UserHomeController>> userHomeScenes = new HashMap<>();
   private static String userListFilePath = null; // initialized in start method
-  private Map<String, Object> userData = new HashMap<>();
+//  private Map<String, Object> userData = new HashMap<>();
 
   @Override
   public void start(Stage stage) throws IOException {
     /* INITIALIZE USERS.DAT */
 
     // Get the resource URL for users.dat
-    java.net.URL resourceUrl = getClass().getResource("/users.dat");
+    java.net.URL resourceUrl = getClass().getResource("/photos_app_data.dat");
     if (resourceUrl == null) {
       // File doesn't exist in resources, create it
       File resourcesDir = new File(getClass().getResource("/").getPath());
-      File usersFile = new File(resourcesDir, "users.dat");
+      File usersFile = new File(resourcesDir, "photos_app_data.dat");
       usersFile.createNewFile();
       userListFilePath = usersFile.getPath();
       userList = new UserList();
     } else {
       // File exists, set the path and load user list
       userListFilePath = resourceUrl.getPath();
-      userList = loadUserList();
+      userList = loadAllUserData().getKey();
+      admin = loadAllUserData().getValue();
     }
+
+    /*TODO: initialize admin user AND make sure it gets saved*/
+    //print admin user
+//    if (admin == null) {
+//      admin = userList.addUser( new User("admin"));
+//      // print that admin user has been initialized
+//      System.out.println("Admin user initialized:" + admin);
+//    }else{
+//      // print that admin user already exists
+//      System.out.println("Admin user loaded:" + admin);
+//    }
 
     /* INITIALIZE STOCK USER */
     if (!userList.hasUser("stock")) {
-      initializeStockPhotos();
+      initializeStockUser();
       // print that stock user has been initialized
       System.out.println("Stock user initialized");
     }
 
-    System.out.println("Users loaded: " + userList.getAllUsers().keySet());
+    System.out.println("Users loaded: " + userList.getAllUsernames());
     System.out.println("Stock user and album initialized: " + userList.getUser("stock").getAlbumNames());
 
-    /*TODO: initialize admin user AND make sure it gets saved*/
-
+    /*LOAD LOGIN VIEW*/
     FXMLLoader fxmlLoader = new FXMLLoader(Photos.class.getResource("/view/login-view.fxml"));
     loginScene = new Scene(fxmlLoader.load(), 320, 240);
     LoginController loginController = fxmlLoader.getController();
@@ -68,7 +77,7 @@ public class Photos extends Application {
     stage.show();
   }
 
-  public void initializeStockPhotos() {
+  public void initializeStockUser() {
     User stock_user = userList.addUser("stock");
     Album stock_album = stock_user.addAlbum("stock");
     String[] stockPhotoPaths = {
@@ -83,7 +92,7 @@ public class Photos extends Application {
       stock_album.addPhoto(new Photo(path));
     }
     try {
-      saveUserList();
+      saveAllUserData();
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
@@ -109,7 +118,7 @@ public class Photos extends Application {
       userHomeScenes.get(username).getValue().populateAlbums();
     }
     stage.setScene(userHomeScenes.get(username).getKey());
-    stage.setTitle("Photo Album " + "(" + username + ")" ); // Set the title to the username
+    stage.setTitle("Photo Album " + "(User: " + username + ")" ); // Set the title to the username
 
   }
 
@@ -136,35 +145,38 @@ public class Photos extends Application {
 
   @Override
   public void stop() throws IOException {
-    saveUserList();
+    saveAllUserData();
   }
 
   /* PUBLIC METHODS TO MANAGE USER DATA */
-  public void addUserData(String key, Object value) {
-    userData.put(key, value);
-  }
-
-  public Object getUserData(String key) {
-    return userData.get(key);
-  }
-
-  public List<String> getUserDataKeys() {
-    return new ArrayList<>(userData.keySet());
-  }
-
-  public void clearUserData() {
-    userData.clear();
-  }
+//  public void addUserData(String key, Object value) {
+//    userData.put(key, value);
+//  }
+//
+//  public Object getUserData(String key) {
+//    return userData.get(key);
+//  }
+//
+//  public List<String> getUserDataKeys() {
+//    return new ArrayList<>(userData.keySet());
+//  }
+//
+//  public void clearUserData() {
+//    userData.clear();
+//  }
   /* PERSISTENCE METHODS */
-  private void saveUserList() throws IOException {
+  private void saveAllUserData() throws IOException {
     try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(userListFilePath))) {
       out.writeObject(userList);
+      out.writeObject(admin); // Save the admin user
     }
   }
 
-  private UserList loadUserList() {
+  private Pair<UserList, User> loadAllUserData() {
     try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(userListFilePath))) {
-      return (UserList) in.readObject();
+      userList = (UserList) in.readObject();
+      admin = (User) in.readObject(); // Load the admin user
+      return new Pair<>(userList, admin);
     } catch (IOException | ClassNotFoundException e) {
       e.printStackTrace();
       return null;

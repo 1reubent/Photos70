@@ -47,6 +47,6 @@ public class Tag implements Serializable {
 
   @Override
   public String toString() {
-    return type + "=" + String.join(", ", values);
+    return type.getName() + "=" + String.join(", ", values);
   }
 }

@@ -104,7 +104,7 @@
 - [x] Delete tag from photo.
 
 ### Photo Copy/Move (inside album view)
-- [ ] Copy photo to another album (same physical photo).
+- [x] Copy photo to another album (same physical photo).
 - [ ] Move photo to another album (remove from source).
 
 ### Slideshow (inside album view)

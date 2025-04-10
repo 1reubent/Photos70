@@ -100,4 +100,14 @@ public class User implements Serializable {
     albums.put(newName, album);
     return true;
   }
+
+  //toString
+  @Override
+  public String toString() {
+    return "User{" +
+            "username='" + username + '\'' +
+            ", albums=" + albums +
+            ", myTagTypes=" + myTagTypes +
+            '}';
+  }
 }

@@ -13,12 +13,18 @@ public class UserList implements Serializable {
   public UserList() {
     users = new HashMap<>();
   }
-
+  //add user from name
   public User addUser(String username) {
-    if (users.containsKey(username)) return null;
+    if (hasUser(username)) return null;
     User new_user = new User(username);
     users.put(username, new_user);
     return new_user;
+  }
+  //add user from user object
+  public User addUser(User user) {
+    if (hasUser(user.getUsername())) return null;
+    users.put(user.getUsername(), user);
+    return user;
   }
 
   public boolean deleteUser(String username) {
@@ -29,9 +35,14 @@ public class UserList implements Serializable {
     return users.get(username);
   }
 
-  public Map<String, User> getAllUsers() {
-    return users;
+  public Collection<User> getAllUsers() {
+    return users.values();
   }
+
+  public Set<String> getAllUsernames() {
+    return users.keySet();
+  }
+
 
   public boolean hasUser(String username) {
     return users.containsKey(username);
