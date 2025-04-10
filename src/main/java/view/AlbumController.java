@@ -353,12 +353,30 @@ public class AlbumController {
       alert.showAndWait();
     }
   }
-//move photo to another album
 
   @FXML
   public void handleSlideshow() {
-    Alert alert = new Alert(Alert.AlertType.INFORMATION, "Slideshow - Coming Soon!");
-    alert.showAndWait();
+    if (album.getPhotos().isEmpty()) {
+      Alert alert = new Alert(Alert.AlertType.WARNING, "No photos available in the album for slideshow!");
+      alert.showAndWait();
+      return;
+    }
+
+    try {
+      FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/slideshow-view.fxml"));
+      VBox root = loader.load();
+
+      SlideshowController controller = loader.getController();
+      controller.init(album.getPhotos());
+
+      Stage slideshowStage = new Stage();
+      Scene scene = new Scene(root, 600, 400);
+      slideshowStage.setScene(scene);
+      slideshowStage.setTitle("Slideshow");
+      slideshowStage.show();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
   }
 
   @FXML

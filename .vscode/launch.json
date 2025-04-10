@@ -6,7 +6,7 @@
   "configurations": [
     {
       "type": "java",
-      "name": "Run Photos App with recompile",
+      "name": "Photos 70 [clean run]",
       "preLaunchTask": "recompile", // Add this to run a task before launching
       "request": "launch",
       "mainClass": "app.Photos",
@@ -18,7 +18,7 @@
     },
     {
       "type": "java",
-      "name": "Run Photos App",
+      "name": "Photos 70 [run]",
       "request": "launch",
       "mainClass": "app.Photos",
       "projectName": "Photos70",

@@ -105,10 +105,10 @@
 
 ### Photo Copy/Move (inside album view)
 - [x] Copy photo to another album (same physical photo).
-- [ ] Move photo to another album (remove from source).
+- [x] Move photo to another album (remove from source).
 
 ### Slideshow (inside album view)
-- [ ] Navigate photos in album, forward and backward.
+- [x] Navigate photos in album, forward and backward.
 
 ### Search (inside album view)
 - [ ] By **date range**.
@@ -137,8 +137,8 @@
   - [x] Login screen
   - [ ] Admin panel
   - [x] Album list view
-  - [ ] Album photo view
-  - [ ] Photo detail view
+  - [x] Album photo view
+  - [x] Photo detail view
   - [ ] Search results view
 - [ ] Manual slideshow controls.
 
