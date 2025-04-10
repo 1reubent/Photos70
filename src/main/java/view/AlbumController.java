@@ -57,10 +57,7 @@ public class AlbumController {
           File file = new File(photo.getPath());
           Image image = new Image(file.toURI().toString(), 50, 50, true, true);
           imageView.setImage(image);
-
-          // Set caption and filename
-          String filename = file.getName();
-          String caption = photo.getCaption();
+          // Set text
           setText(photo.toString());
           setGraphic(imageView);
         }
@@ -78,13 +75,6 @@ public class AlbumController {
     File selectedFile = fileChooser.showOpenDialog(null);
     if (selectedFile != null) {
       String photoPath = selectedFile.getAbsolutePath();
-      //check if the file is already in the album
-      if (album.getPhoto(photoPath) != null) {
-        Alert alert = new Alert(Alert.AlertType.WARNING, "Photo already exists in the album!");
-        alert.showAndWait();
-        return;
-      }
-      //if photo already exists in an album, add that same photo to this album
       Photo photoToAdd = null;
 
       // Check if the photo exists in another album
@@ -101,10 +91,15 @@ public class AlbumController {
         photoToAdd = new Photo(selectedFile.getAbsolutePath());
       }
 
-      // Add the photo to the album and update UI
-      album.addPhoto(photoToAdd);
-      populatePhotos();
-      statusLabel.setText("Photo added: " + selectedFile.getName());
+      try {
+        // Add the photo to the album and update UI
+        album.addPhoto(photoToAdd);
+        populatePhotos();
+        statusLabel.setText("Photo added: " + selectedFile.getName());
+      } catch (IllegalArgumentException | IllegalStateException e) {
+        Alert alert = new Alert(Alert.AlertType.WARNING, e.getMessage());
+        alert.showAndWait();
+      }
     }
   }
 
@@ -120,7 +115,12 @@ public class AlbumController {
       alert.setContentText("Are you sure you want to remove this photo from the album?");
       Optional<ButtonType> result = alert.showAndWait();
       if (result.isPresent() && result.get() == ButtonType.OK) {
-        album.removePhoto(selectedPhoto);
+        try {
+            album.removePhoto(selectedPhoto);
+        } catch (IllegalArgumentException e) {
+            Alert alert2 = new Alert(Alert.AlertType.ERROR, e.getMessage());
+            alert2.showAndWait();
+        }
         populatePhotos();
         statusLabel.setText("Photo removed: " + selectedPhoto.getName());
       }
@@ -282,12 +282,12 @@ public class AlbumController {
         if (result.isPresent() && result.get() == ButtonType.OK) {
           Album targetAlbum = controller.getSelectedAlbum();
           if (targetAlbum != null) {
-            if (targetAlbum.getPhoto(selectedPhoto.getPath()) != null) {
-              Alert alert = new Alert(Alert.AlertType.ERROR, "Photo already exists in the selected album!");
-              alert.showAndWait();
-            } else {
+            try {
               targetAlbum.addPhoto(selectedPhoto);
               statusLabel.setText("Photo copied to album: " + targetAlbum.getName());
+            } catch (IllegalArgumentException | IllegalStateException e) {
+              Alert alert = new Alert(Alert.AlertType.ERROR, e.getMessage());
+              alert.showAndWait();
             }
           } else {
             Alert alert = new Alert(Alert.AlertType.WARNING, "No album selected!");

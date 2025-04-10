@@ -81,16 +81,19 @@ public class Photos extends Application {
     User stock_user = userList.addUser("stock");
     Album stock_album = stock_user.addAlbum("stock");
     String[] stockPhotoPaths = {
-        "data/stock1.jpg",
-        "data/stock2.jpg",
-        "data/stock3.jpg",
-        "data/stock4.jpg",
-        "data/stock5.jpg"
+            "data/stock1.jpg",
+            "data/stock2.jpg",
+            "data/stock3.jpg",
+            "data/stock4.jpg",
+            "data/stock5.jpg"
     };
 
+    Album.setInitializingStock(true);
     for (String path : stockPhotoPaths) {
       stock_album.addPhoto(new Photo(path));
     }
+    Album.setInitializingStock(false);
+
     try {
       saveAllUserData();
     } catch (IOException e) {
@@ -118,7 +121,7 @@ public class Photos extends Application {
       userHomeScenes.get(username).getValue().populateAlbums();
     }
     stage.setScene(userHomeScenes.get(username).getKey());
-    stage.setTitle("Photo Album " + "(User: " + username + ")" ); // Set the title to the username
+    stage.setTitle("Photo Album " + "(User: " + username + ")"); // Set the title to the username
 
   }
 

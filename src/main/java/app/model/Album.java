@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.util.*;
 
 public class Album implements Serializable {
+  private static boolean isInitializingStock = false;
   private String name;
   private List<Photo> photos;
 
@@ -12,6 +13,9 @@ public class Album implements Serializable {
     this.name = name;
     this.photos = new ArrayList<>();
     System.out.println("Album created: " + name);
+  }
+  public static void setInitializingStock(boolean initializing) {
+    isInitializingStock = initializing;
   }
 
   public String getName() { return name; }
@@ -31,12 +35,19 @@ public class Album implements Serializable {
   }
 
   public void addPhoto(Photo photo) {
-    if (!photos.contains(photo)) {
-      photos.add(photo);
+    if (name.equalsIgnoreCase("stock") && !isInitializingStock) {
+      throw new IllegalStateException("Cannot add photos to stock album");
     }
+    if (photos.contains(photo)) {
+      throw new IllegalArgumentException("Photo already exists in the album!");
+    }
+    photos.add(photo);
   }
 
   public void removePhoto(Photo photo) {
+    if (name.equalsIgnoreCase("stock") && !isInitializingStock) {
+      throw new IllegalStateException("Cannot remove stock photos from stock album");
+    }
     photos.remove(photo);
   }
   public int getPhotoCount() {
