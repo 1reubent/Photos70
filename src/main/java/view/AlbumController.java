@@ -116,10 +116,10 @@ public class AlbumController {
       Optional<ButtonType> result = alert.showAndWait();
       if (result.isPresent() && result.get() == ButtonType.OK) {
         try {
-            album.removePhoto(selectedPhoto);
+          album.removePhoto(selectedPhoto);
         } catch (IllegalArgumentException e) {
-            Alert alert2 = new Alert(Alert.AlertType.ERROR, e.getMessage());
-            alert2.showAndWait();
+          Alert alert2 = new Alert(Alert.AlertType.ERROR, e.getMessage());
+          alert2.showAndWait();
         }
         populatePhotos();
         statusLabel.setText("Photo removed: " + selectedPhoto.getName());
@@ -307,13 +307,53 @@ public class AlbumController {
   public void handleMovePhoto() {
     Photo selectedPhoto = photoList.getSelectionModel().getSelectedItem();
     if (selectedPhoto != null) {
-      Alert alert = new Alert(Alert.AlertType.INFORMATION, "Move Photo - Coming Soon!");
-      alert.showAndWait();
+      try {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/select-album-dialog.fxml"));
+        GridPane root = loader.load();
+
+        SelectAlbumDialogController controller = loader.getController();
+        controller.init(user);
+
+        Dialog<ButtonType> dialog = new Dialog<>();
+        dialog.setTitle("Move Photo");
+        dialog.setHeaderText("Select an album to move the photo to:");
+        dialog.getDialogPane().setContent(root);
+        dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
+
+        Optional<ButtonType> result = dialog.showAndWait();
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+          Album targetAlbum = controller.getSelectedAlbum();
+          if (targetAlbum != null) {
+            try {
+              album.removePhoto(selectedPhoto);
+              try {
+                targetAlbum.addPhoto(selectedPhoto);
+                populatePhotos();
+                statusLabel.setText("Photo moved to album: " + targetAlbum.getName());
+              } catch (IllegalArgumentException | IllegalStateException e) {
+                //catch add photo exception.
+                album.addPhoto(selectedPhoto); // Re-add the photo to the original album
+                throw e; // Re-throw the exception to handle it in the outer catch block
+              }
+            } catch (IllegalArgumentException | IllegalStateException e) {
+              //catch remove photo OR re-thrown add photo exception
+              Alert alert = new Alert(Alert.AlertType.ERROR, e.getMessage());
+              alert.showAndWait();
+            }
+          } else {
+            Alert alert = new Alert(Alert.AlertType.WARNING, "No album selected!");
+            alert.showAndWait();
+          }
+        }
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
     } else {
       Alert alert = new Alert(Alert.AlertType.WARNING, "No photo selected!");
       alert.showAndWait();
     }
   }
+//move photo to another album
 
   @FXML
   public void handleSlideshow() {
