@@ -18,6 +18,9 @@ public class AdminHomeController {
     this.userList = userList;
   }
 
+  //Write a populate_List method, to refresh the list, and call it in the Init Method
+  //Make sure to call again when any updates are made (Add/Delete User)
+
   @FXML
   public void handleCreateUser (){
     try {
