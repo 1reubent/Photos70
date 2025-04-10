@@ -20,7 +20,7 @@ public class EditTagTypesController {
 
   public void init(User user) {
     this.user = user;
-    tagTypeList.getItems().addAll(user.getTagTypes().keySet());
+    tagTypeList.getItems().addAll(user.getTagTypeNames());
     configureButtons();
   }
 
@@ -30,7 +30,7 @@ public class EditTagTypesController {
       if (!newTagType.isEmpty()) {
         if (user.addTagType(newTagType, multiValueCheckBox.isSelected())) {
           tagTypeList.getItems().clear();
-          tagTypeList.getItems().addAll(user.getTagTypes().keySet());
+          tagTypeList.getItems().addAll(user.getTagTypeNames());
           newTagTypeField.clear();
           multiValueCheckBox.setSelected(false);
         } else {

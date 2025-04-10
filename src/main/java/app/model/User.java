@@ -5,8 +5,7 @@ import java.util.*;
 
 public class User implements Serializable {
   private String username;
-  //TODO: why is this a map? album class already has a name field
-  private Map<String, Album> albums;
+  private Map<String, Album> albums; // Album Name -> Album
   private Map<String, Boolean> myTagTypes; // User-specific tag types; Tag Name -> Allows Multiple Values
 
   public User(String username) {
@@ -37,6 +36,13 @@ public class User implements Serializable {
   public Map<String, Boolean> getTagTypes() {
     return myTagTypes;
   }
+  public Set<String> getTagTypeNames() {
+    return myTagTypes.keySet();
+  }
+
+  public boolean isTagTypeDefined(String name) {
+    return myTagTypes.containsKey(name.toLowerCase());
+  }
 
   public boolean addTagType(String name, boolean allowsMultipleValues) {
     if (myTagTypes.containsKey(name.toLowerCase())) return false;
@@ -48,18 +54,15 @@ public class User implements Serializable {
     return myTagTypes.remove(name.toLowerCase()) != null;
   }
 
-  public boolean allowsMultipleValues(String name) {
+  public boolean tagTypeAllowsMultipleValues(String name) {
     return myTagTypes.getOrDefault(name.toLowerCase(), false);
   }
 
-  public boolean hasTagType(String name) {
-    return myTagTypes.containsKey(name.toLowerCase());
-  }
-
-  public boolean addAlbum(String name) {
-    if (albums.containsKey(name)) return false;
-    albums.put(name, new Album(name));
-    return true;
+  public Album addAlbum(String name) {
+    if (albums.containsKey(name)) return null;
+    Album new_album = new Album(name);
+    albums.put(name, new_album);
+    return new_album;
   }
 
   public boolean deleteAlbum(String name) {

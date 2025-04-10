@@ -24,9 +24,9 @@
   - [x] `User`: username, list of albums.
   - [x] `Album`: name, list of photos.
   - [x] `Photo`: file path, caption, date, list of tags.
-  - [ ] `Tag`: name, value.
+  - [x] `Tag`: name, value.
   - [ ] `Admin`: handles user creation/deletion.
-  - [ ] `TagType`: pre-defined and user-defined tag types.
+  - [x] `TagType`: pre-defined and user-defined tag types.
 - [ ] Ensure:
   - [ ] Proper equals/hashCode for comparing tags and photos.
   - [ ] Serializable versioning (serialVersionUID).
@@ -53,8 +53,8 @@
 - [x] Implement login screen:
   - [x] Username field
   - [ ] (Optional) Password field
-- [ ] Recognize:
-  - [ ] `admin` user triggers admin subsystem
+- [x] Recognize:
+  - [x] `admin` user triggers admin subsystem
   - [x] `stock` user loads stock photos
 - [x] Non-admin users load their albums and photos on login.
 
@@ -76,8 +76,8 @@
 ### Album Management
 - [x] Display albums (name, photo count, date range).
 - [x] Create new album (unique per user).
-- [ ] Rename album. (still need to check that it works)
-- [ ] Delete album. (still need to check that it works)
+- [x] Rename album. 
+- [x] Delete album. 
 - [x] Open album to see photo thumbnails and captions.
 
 ### Photo Management (inside album view)
@@ -85,17 +85,17 @@
 - [x] Ensure:
   - [x] For stock photos: from `/data/`
   - [x] For user photos: path is stored, photo not copied
-- [ ] Remove photo.
+- [x] Remove photo.
 - [x] Caption / recaption photo.
-- [ ] View photo:
+- [x] View photo:
   - [x] Show full image.
-  - [ ] Show caption.
-  - [ ] Show date (file's last modified date).
-  - [ ] Show all tags.
+  - [x] Show caption.
+  - [x] Show date (file's last modified date).
+  - [x] Show all tags.
 
 ### Tag Management (inside album view)
-- [ ] Predefined tag types (e.g., location, person).
-- [ ] Allow user to define new tag types.
+- [x] Predefined tag types (e.g., location, person).
+- [x] Allow user to define new tag types.
 - [ ] Add tag to photo:
   - [ ] Enforce rules:
     - [ ] Single value tags (e.g., location).

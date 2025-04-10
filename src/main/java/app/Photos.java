@@ -1,5 +1,6 @@
 package app;
 
+import app.model.Album;
 import app.model.Photo;
 import app.model.User;
 import app.model.UserList;
@@ -67,7 +68,7 @@ public class Photos extends Application {
 
   public void initializeStockPhotos() {
     User stock_user = userList.addUser("stock");
-    stock_user.addAlbum("stock");
+    Album stock_album = stock_user.addAlbum("stock");
     String[] stockPhotoPaths = {
         "data/stock1.jpg",
         "data/stock2.jpg",
@@ -77,7 +78,7 @@ public class Photos extends Application {
     };
 
     for (String path : stockPhotoPaths) {
-      stock_user.getAlbum("stock").addPhoto(new Photo(path));
+      stock_album.addPhoto(new Photo(path));
     }
     try {
       saveUserList();

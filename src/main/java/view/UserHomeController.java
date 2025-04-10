@@ -103,7 +103,7 @@ public class UserHomeController {
     dialog.setHeaderText("Enter album name:");
     dialog.setContentText("Name:");
     dialog.showAndWait().ifPresent(name -> {
-      if (!user.addAlbum(name)) {
+      if (user.addAlbum(name) == null) {
         showError("Album name already exists!");
         return;
       }

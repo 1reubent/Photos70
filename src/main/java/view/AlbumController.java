@@ -7,8 +7,6 @@ import app.model.Tag;
 import app.model.User;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.geometry.Insets;
-import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
@@ -176,59 +174,43 @@ public class AlbumController {
   public void handleAddTag() {
     Photo selectedPhoto = photoList.getSelectionModel().getSelectedItem();
     if (selectedPhoto != null) {
-      Dialog<ButtonType> dialog = new Dialog<>();
-      dialog.setTitle("Add Tag");
-      dialog.setHeaderText("Add a tag to the photo");
+      try {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/add-tag-dialog.fxml"));
+        GridPane root = loader.load();
 
-      // Create the form content
-      GridPane grid = new GridPane();
-      grid.setHgap(10);
-      grid.setVgap(10);
-      grid.setPadding(new Insets(20, 10, 10, 10));
+        AddTagDialogController controller = loader.getController();
+        controller.init(user);
 
-      ComboBox<String> tagTypeCombo = new ComboBox<>();
-      tagTypeCombo.getItems().addAll(user.getTagTypes().keySet());
-      TextField valueField = new TextField();
+        Dialog<ButtonType> dialog = new Dialog<>();
+        dialog.setTitle("Add Tag");
+        dialog.setHeaderText("Add a tag to the photo");
+        dialog.getDialogPane().setContent(root);
+        dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
 
-      grid.add(new Label("Tag Type:"), 0, 0);
-      grid.add(tagTypeCombo, 1, 0);
-      grid.add(new Label("Value:"), 0, 1);
-      grid.add(valueField, 1, 1);
+        Optional<ButtonType> result = dialog.showAndWait();
+        if (result.isPresent() && result.get() == ButtonType.OK && controller.isConfirmed()) {
+          String tagType = controller.getSelectedTagType();
+          String tagValue = controller.getTagValue();
+          System.out.println(user.getTagTypes());
+          System.out.println(tagType);
+          if (!user.tagTypeAllowsMultipleValues(tagType) && selectedPhoto.hasTagType(tagType)) {
+            Alert alert = new Alert(Alert.AlertType.ERROR,
+                    "'" + tagType + "' tag type does not allow multiple values. Please remove the existing tag from '" + selectedPhoto.getName() + "' before adding a new one.");
+            alert.showAndWait();
+            return;
+          }
 
-      dialog.getDialogPane().setContent(grid);
-      dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
-
-      // Enable/Disable OK button depending on whether fields are filled
-      Node okButton = dialog.getDialogPane().lookupButton(ButtonType.OK);
-      okButton.setDisable(true);
-
-      tagTypeCombo.valueProperty().addListener((obs, oldVal, newVal) ->
-              okButton.setDisable(newVal == null || valueField.getText().trim().isEmpty()));
-      valueField.textProperty().addListener((obs, oldVal, newVal) ->
-              okButton.setDisable(tagTypeCombo.getValue() == null || newVal.trim().isEmpty()));
-
-      Optional<ButtonType> result = dialog.showAndWait();
-      if (result.isPresent() && result.get() == ButtonType.OK) {
-        String tagType = tagTypeCombo.getValue();
-        String tagValue = valueField.getText().trim();
-
-        // Check if tag type allows multiple values
-        //  user.getTagTypes().get(tagType) returns allowsMultipleValues
-        if (!user.getTagTypes().get(tagType) && selectedPhoto.hasTagType(tagType)) {
-          Alert alert = new Alert(Alert.AlertType.ERROR,
-                  "This tag type does not allow multiple values and the photo already has this tag type.");
-          alert.showAndWait();
-          return;
+          try {
+            Tag tag = new Tag(tagType, tagValue);
+            selectedPhoto.addTag(tag);
+            statusLabel.setText("Tag added: " + tag);
+          } catch (IllegalArgumentException | IllegalStateException e) {
+            Alert alert = new Alert(Alert.AlertType.ERROR, e.getMessage());
+            alert.showAndWait();
+          }
         }
-
-        try {
-          Tag tag = new Tag(tagType, tagValue);
-          selectedPhoto.addTag(tag);
-          statusLabel.setText("Tag added: " + tag);
-        } catch (IllegalArgumentException | IllegalStateException e) {
-          Alert alert = new Alert(Alert.AlertType.ERROR, e.getMessage());
-          alert.showAndWait();
-        }
+      } catch (IOException e) {
+        e.printStackTrace();
       }
     } else {
       Alert alert = new Alert(Alert.AlertType.WARNING, "No photo selected!");
