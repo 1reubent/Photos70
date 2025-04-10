@@ -21,27 +21,41 @@ public class Photo implements Serializable {
             new Date(file.lastModified()).toInstant(), ZoneId.systemDefault()
     );
   }
+
   //get name
   public String getName() {
     return new File(path).getName();
   }
-  public String getPath() { return path; }
 
-  public String getCaption() { return caption; }
+  public String getPath() {
+    return path;
+  }
 
-  public void setCaption(String caption) { this.caption = caption; }
+  public String getCaption() {
+    return caption;
+  }
 
-  public LocalDateTime getDateTaken() { return dateTaken; }
+  public void setCaption(String caption) {
+    this.caption = caption;
+  }
 
-  public Set<Tag> getTags() { return tags; }
+  public LocalDateTime getDateTaken() {
+    return dateTaken;
+  }
+
+  public Set<Tag> getTags() {
+    return tags;
+  }
 
   public void addTag(Tag tag) {
     if (!tags.add(tag)) {
-      throw new IllegalStateException("Tag already exists.");
+      throw new IllegalStateException("'" + tag + "' tag already exists.");
     }
   }
 
-  public void removeTag(Tag tag) { tags.remove(tag); }
+  public void removeTag(Tag tag) {
+    tags.remove(tag);
+  }
 
   //has tag type from name
   public boolean hasTagType(String name) {
@@ -52,6 +66,7 @@ public class Photo implements Serializable {
     }
     return false;
   }
+
   //has tag type from tag type object
   public boolean hasTagType(TagType tagType) {
     for (Tag tag : tags) {
@@ -61,8 +76,22 @@ public class Photo implements Serializable {
     }
     return false;
   }
-@Override
-public String toString() {
-  return String.format("%s (Caption: %s)", getName(), !caption.isEmpty() ? caption : "No caption");
-}
+  //equals and hashcode
+  @Override
+  public boolean equals(Object o) {
+      if (this == o) return true;
+      if (o == null || getClass() != o.getClass()) return false;
+      Photo photo = (Photo) o;
+      return Objects.equals(path, photo.path);
+  }
+
+  @Override
+  public int hashCode() {
+      return Objects.hash(path);
+  }
+
+  @Override
+  public String toString() {
+    return String.format("%s (Caption: %s)", getName(), !caption.isEmpty() ? caption : "No caption");
+  }
 }

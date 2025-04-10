@@ -140,7 +140,7 @@
   - [x] Album photo view
   - [x] Photo detail view
   - [ ] Search results view
-- [ ] Manual slideshow controls.
+- [x] Manual slideshow controls.
 
 ---
 

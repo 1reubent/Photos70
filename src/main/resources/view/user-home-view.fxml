@@ -10,7 +10,7 @@
     <top>
         <HBox spacing="10">
             <padding>
-                <Insets top="10" right="10" bottom="10" left="10"/>
+                <Insets top="10" right="10" bottom="10"/>
             </padding>
             <!--            <Button text="Import Photo" onAction="#handleImport"/>-->
             <!--            <Button text="Add Tag" onAction="#handleAddTag"/>-->
@@ -21,8 +21,14 @@
     </top>
     <center>
         <HBox spacing="10">
-            <ListView fx:id="albumList" HBox.hgrow="ALWAYS" />
+            <padding>
+                <Insets top="10"/>
+            </padding>
+            <ListView fx:id="albumList" HBox.hgrow="ALWAYS"/>
             <VBox spacing="10">
+                <padding>
+                    <Insets right="10" bottom="10" left="10"/>
+                </padding>
                 <Button text="Create Album" onAction="#handleCreateAlbum"/>
                 <Button text="Delete Album" onAction="#handleDeleteAlbum"/>
                 <Button text="Rename Album" onAction="#handleRenameAlbum"/>
