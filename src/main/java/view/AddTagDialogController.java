@@ -1,35 +1,35 @@
 package view;
 
+import app.model.TagType;
 import app.model.User;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 
+import java.util.List;
 import java.util.Optional;
 
 public class AddTagDialogController {
 
   @FXML
-  private ComboBox<String> tagTypeCombo;
+  private ComboBox<TagType> tagTypeCombo;
   @FXML
   private TextField valueField;
 
-  private User user;
   private boolean confirmed = false;
   private String selectedTagType;
   private String tagValue;
 
-  public void init(User user) {
-    this.user = user;
-    tagTypeCombo.getItems().addAll(user.getTagTypeNamesWithMultiValue());
+  public void init(List<TagType> tagTypes) {
+    tagTypeCombo.getItems().addAll(tagTypes);
   }
 
   public boolean isConfirmed() {
     return confirmed;
   }
 
-  public String getSelectedTagType() {
-    return tagTypeCombo.getValue().replace(" (multivalue)", "");
+  public TagType getSelectedTagType() {
+    return tagTypeCombo.getValue();
   }
 
   public String getTagValue() {

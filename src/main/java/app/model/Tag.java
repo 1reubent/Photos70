@@ -4,17 +4,17 @@ import java.io.Serializable;
 import java.util.*;
 
 public class Tag implements Serializable {
-  private String name;
+  private TagType type;
   private Set<String> values;
 
-  public Tag(String name, String value) {
-    this.name = name.toLowerCase();
+  public Tag(TagType type, String value) {
+    this.type = type;
     this.values = new HashSet<>();
     this.values.add(value.toLowerCase());
   }
 
   public String getName() {
-    return name;
+    return type.getName();
   }
 
   public Set<String> getValues() {
@@ -37,16 +37,16 @@ public class Tag implements Serializable {
     if (this == obj) return true;
     if (!(obj instanceof Tag)) return false;
     Tag other = (Tag) obj;
-    return name.equals(other.name) && values.equals(other.values);
+    return type.equals(other.type) && values.equals(other.values);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(name, values);
+    return Objects.hash(type, values);
   }
 
   @Override
   public String toString() {
-    return name + "=" + String.join(", ", values);
+    return type + "=" + String.join(", ", values);
   }
 }

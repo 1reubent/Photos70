@@ -1,10 +1,7 @@
 package view;
 
 import app.Photos;
-import app.model.Album;
-import app.model.Photo;
-import app.model.Tag;
-import app.model.User;
+import app.model.*;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -64,7 +61,7 @@ public class AlbumController {
           // Set caption and filename
           String filename = file.getName();
           String caption = photo.getCaption();
-          setText(String.format("%s (Caption: %s)", filename, !caption.isEmpty() ? caption : "No caption"));
+          setText(photo.toString());
           setGraphic(imageView);
         }
       }
@@ -188,7 +185,7 @@ public class AlbumController {
         GridPane root = loader.load();
 
         AddTagDialogController controller = loader.getController();
-        controller.init(user);
+        controller.init(user.getTagTypes());
 
         Dialog<ButtonType> dialog = new Dialog<>();
         dialog.setTitle("Add Tag");
@@ -198,11 +195,11 @@ public class AlbumController {
 
         Optional<ButtonType> result = dialog.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK && controller.isConfirmed()) {
-          String tagType = controller.getSelectedTagType();
+          TagType tagType = controller.getSelectedTagType();
           String tagValue = controller.getTagValue();
           System.out.println(user.getTagTypes());
           System.out.println(tagType);
-          if (!user.isMultiValueTagType(tagType) && selectedPhoto.hasTagType(tagType)) {
+          if (!tagType.isMultiValue() && selectedPhoto.hasTagType(tagType)) {
             Alert alert = new Alert(Alert.AlertType.ERROR,
                     "'" + tagType + "' tag type does not allow multiple values. Please remove the existing tag from '" + selectedPhoto.getName() + "' before adding a new one.");
             alert.showAndWait();
@@ -268,8 +265,38 @@ public class AlbumController {
   public void handleCopyPhoto() {
     Photo selectedPhoto = photoList.getSelectionModel().getSelectedItem();
     if (selectedPhoto != null) {
-      Alert alert = new Alert(Alert.AlertType.INFORMATION, "Copy Photo - Coming Soon!");
-      alert.showAndWait();
+      try {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/select-album-dialog.fxml"));
+        GridPane root = loader.load();
+
+        SelectAlbumDialogController controller = loader.getController();
+        controller.init(user);
+
+        Dialog<ButtonType> dialog = new Dialog<>();
+        dialog.setTitle("Copy Photo");
+        dialog.setHeaderText("Select an album to copy the photo to:");
+        dialog.getDialogPane().setContent(root);
+        dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
+
+        Optional<ButtonType> result = dialog.showAndWait();
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+          Album targetAlbum = controller.getSelectedAlbum();
+          if (targetAlbum != null) {
+            if (targetAlbum.getPhoto(selectedPhoto.getPath()) != null) {
+              Alert alert = new Alert(Alert.AlertType.ERROR, "Photo already exists in the selected album!");
+              alert.showAndWait();
+            } else {
+              targetAlbum.addPhoto(selectedPhoto);
+              statusLabel.setText("Photo copied to album: " + targetAlbum.getName());
+            }
+          } else {
+            Alert alert = new Alert(Alert.AlertType.WARNING, "No album selected!");
+            alert.showAndWait();
+          }
+        }
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
     } else {
       Alert alert = new Alert(Alert.AlertType.WARNING, "No photo selected!");
       alert.showAndWait();

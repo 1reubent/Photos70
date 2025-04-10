@@ -6,21 +6,20 @@ import java.util.*;
 public class User implements Serializable {
   private String username;
   private Map<String, Album> albums; // Album Name -> Album
-  private Map<String, Boolean> myTagTypes; // User-specific tag types; Tag Name -> Allows Multiple Values
+  private List<TagType> myTagTypes; // User-specific tag types
 
   public User(String username) {
     this.username = username;
     this.albums = new HashMap<>();
-    this.myTagTypes = new HashMap<>();
-    //initialize default tag types
-    myTagTypes.put("location", false);
-    myTagTypes.put("people", true);
+    this.myTagTypes = new ArrayList<>();
+    // Initialize default tag types
+  addTagType("location", false);
+  addTagType("people", true);
   }
 
   public String getUsername() {
     return username;
   }
-
 
   public Collection<Album> getAlbums() {
     return albums.values();
@@ -34,44 +33,60 @@ public class User implements Serializable {
     return albums.get(name);
   }
 
-  public Map<String, Boolean> getTagTypes() {
+  public List<TagType> getTagTypes() {
     return myTagTypes;
   }
 
-  public Set<String> getTagTypeNames() {
-    return myTagTypes.keySet();
+  public TagType getTagType(String name) {
+    return myTagTypes.stream()
+            .filter(tagType -> tagType.getName().equalsIgnoreCase(name))
+            .findFirst()
+            .orElse(null);
   }
 
-  //get tag type names with multi-value indication
-  public List<String> getTagTypeNamesWithMultiValue() {
-    return getTagTypeNames().stream()
-            .map(tagType -> isMultiValueTagType(tagType) ? tagType + " (multivalue)" : tagType)
-            .toList();
-  }
-
-  public boolean isTagTypeDefined(String name) {
-    return myTagTypes.containsKey(name.toLowerCase());
-  }
-
-  public boolean addTagType(String name, boolean allowsMultipleValues) {
-    if (myTagTypes.containsKey(name.toLowerCase())) return false;
-    myTagTypes.put(name.toLowerCase(), allowsMultipleValues);
+  //add tag type from name and isMultiValue
+  public boolean addTagType(String name, boolean isMultiValue) {
+    if (isTagTypeDefined(name)) return false;
+    TagType newTagType = new TagType(name, isMultiValue);
+    myTagTypes.add(newTagType);
     return true;
   }
 
-  public boolean removeTagType(String name) {
-    return myTagTypes.remove(name.toLowerCase()) != null;
+  //add tag type from tagType object
+  public boolean addTagType(TagType tagType) {
+    if (!isTagTypeDefined(tagType)) return false;
+    myTagTypes.add(tagType);
+    return true;
   }
 
-  public boolean isMultiValueTagType(String name) {
-    return myTagTypes.getOrDefault(name.toLowerCase(), false);
+
+  public boolean removeTagType(String name) {
+    TagType tagType = getTagType(name);
+    if (tagType == null) return false;
+    return myTagTypes.remove(tagType);
   }
+
+  //is tag type defined from name
+  public boolean isTagTypeDefined(String name) {
+    return getTagType(name) != null;
+  }
+
+  //is tag type defined from tag type object
+  public boolean isTagTypeDefined(TagType tagType) {
+    return getTagType(tagType.getName()) != null;
+  }
+
+
+//  public boolean isMultiValueTagType(String name) {
+//    TagType tagType = getTagType(name);
+//    return tagType != null && tagType.isMultiValue();
+//  }
 
   public Album addAlbum(String name) {
     if (albums.containsKey(name)) return null;
-    Album new_album = new Album(name);
-    albums.put(name, new_album);
-    return new_album;
+    Album newAlbum = new Album(name);
+    albums.put(name, newAlbum);
+    return newAlbum;
   }
 
   public boolean deleteAlbum(String name) {

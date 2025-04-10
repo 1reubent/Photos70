@@ -48,10 +48,7 @@ public class UserHomeController {
         if (empty || album == null) {
           setText(null);
         } else {
-          setText(String.format("Name: %s | %d photos | Date Range: %s",
-                  album.getName(),
-                  album.getPhotoCount(),
-                  album.getDateRange()));
+          setText(album.toString());
         }
       }
     });

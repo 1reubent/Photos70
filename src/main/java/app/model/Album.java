@@ -55,4 +55,9 @@ public class Album implements Serializable {
   public LocalDateTime getLatestDate() {
     return photos.stream().map(Photo::getDateTaken).max(LocalDateTime::compareTo).orElse(null);
   }
+  //to string
+  @Override
+  public String toString() {
+    return String.format("Name: %s | %d photos | Date Range: %s", name, getPhotoCount(), getDateRange());
+  }
 }

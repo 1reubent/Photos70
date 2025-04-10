@@ -43,7 +43,7 @@ public class Photo implements Serializable {
 
   public void removeTag(Tag tag) { tags.remove(tag); }
 
-  //has tag type
+  //has tag type from name
   public boolean hasTagType(String name) {
     for (Tag tag : tags) {
       if (tag.getName().equalsIgnoreCase(name)) {
@@ -52,8 +52,17 @@ public class Photo implements Serializable {
     }
     return false;
   }
-  @Override
-  public String toString() {
-    return caption + " - " + dateTaken.toString();
+  //has tag type from tag type object
+  public boolean hasTagType(TagType tagType) {
+    for (Tag tag : tags) {
+      if (tag.getName().equalsIgnoreCase(tagType.getName())) {
+        return true;
+      }
+    }
+    return false;
   }
+@Override
+public String toString() {
+  return String.format("%s (Caption: %s)", getName(), !caption.isEmpty() ? caption : "No caption");
+}
 }
