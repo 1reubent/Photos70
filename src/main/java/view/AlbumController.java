@@ -193,7 +193,7 @@ public class AlbumController {
           String tagValue = controller.getTagValue();
           System.out.println(user.getTagTypes());
           System.out.println(tagType);
-          if (!user.tagTypeAllowsMultipleValues(tagType) && selectedPhoto.hasTagType(tagType)) {
+          if (!user.isMultiValueTagType(tagType) && selectedPhoto.hasTagType(tagType)) {
             Alert alert = new Alert(Alert.AlertType.ERROR,
                     "'" + tagType + "' tag type does not allow multiple values. Please remove the existing tag from '" + selectedPhoto.getName() + "' before adding a new one.");
             alert.showAndWait();

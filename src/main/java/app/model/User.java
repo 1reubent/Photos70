@@ -29,6 +29,7 @@ public class User implements Serializable {
   public Set<String> getAlbumNames() {
     return albums.keySet();
   }
+
   public Album getAlbum(String name) {
     return albums.get(name);
   }
@@ -36,8 +37,16 @@ public class User implements Serializable {
   public Map<String, Boolean> getTagTypes() {
     return myTagTypes;
   }
+
   public Set<String> getTagTypeNames() {
     return myTagTypes.keySet();
+  }
+
+  //get tag type names with multi-value indication
+  public List<String> getTagTypeNamesWithMultiValue() {
+    return getTagTypeNames().stream()
+            .map(tagType -> isMultiValueTagType(tagType) ? tagType + " (multivalue)" : tagType)
+            .toList();
   }
 
   public boolean isTagTypeDefined(String name) {
@@ -54,7 +63,7 @@ public class User implements Serializable {
     return myTagTypes.remove(name.toLowerCase()) != null;
   }
 
-  public boolean tagTypeAllowsMultipleValues(String name) {
+  public boolean isMultiValueTagType(String name) {
     return myTagTypes.getOrDefault(name.toLowerCase(), false);
   }
 

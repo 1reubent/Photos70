@@ -4,7 +4,7 @@ import app.model.User;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 
-public class EditTagTypesController {
+public class ViewTagTypesController {
   @FXML
   private ListView<String> tagTypeList;
   @FXML
@@ -20,7 +20,7 @@ public class EditTagTypesController {
 
   public void init(User user) {
     this.user = user;
-    tagTypeList.getItems().addAll(user.getTagTypeNames());
+    tagTypeList.getItems().addAll(user.getTagTypeNamesWithMultiValue());
     configureButtons();
   }
 
@@ -68,6 +68,7 @@ public class EditTagTypesController {
       }
     });
   }
+
   private void removeTagsFromPhotos(String tagType) {
     user.getAlbums().forEach(album -> {
       album.getPhotos().forEach(photo -> {
@@ -75,10 +76,12 @@ public class EditTagTypesController {
       });
     });
   }
+
   private void showInfo(String message) {
     Alert alert = new Alert(Alert.AlertType.INFORMATION, message);
     alert.showAndWait();
   }
+
   private void showError(String message) {
     Alert alert = new Alert(Alert.AlertType.ERROR, message);
     alert.showAndWait();

@@ -2,17 +2,11 @@ package view;
 
 import app.Photos;
 import app.model.Album;
-import app.model.Tag;
 import javafx.fxml.FXML;
-import javafx.geometry.Insets;
 import javafx.scene.control.*;
-import javafx.scene.layout.GridPane;
-import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-
-import java.io.File;
 
 import app.model.User;
 
@@ -71,17 +65,17 @@ public class UserHomeController {
   }
 
   @FXML
-  public void handleEditTagTypes() {
+  public void handleViewTagTypes() {
     try {
-      FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/edit-tag-types-dialog.fxml"));
+      FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/view-tag-types-dialog.fxml"));
       DialogPane dialogPane = loader.load();
 
-      EditTagTypesController controller = loader.getController();
+      ViewTagTypesController controller = loader.getController();
       controller.init(user);
 
       Dialog<ButtonType> dialog = new Dialog<>();
       dialog.setDialogPane(dialogPane);
-      dialog.setTitle("Edit My Tag Types");
+      dialog.setTitle("View My Tag Types");
       //add close button
       dialog.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
       dialog.showAndWait();

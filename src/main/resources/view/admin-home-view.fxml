@@ -16,7 +16,7 @@
 <!--            <Button text="Add Tag" onAction="#handleAddTag"/>-->
 <!--            <Button text="Remove Tag" onAction="#handleRemoveTag"/>-->
             <!-- <Button text="Logout" onAction="#handleLogout"/> -->
-            <!-- <Button text="Edit My Tag Types" onAction="#handleEditTagTypes"/> -->
+            <!-- <Button text="Edit My Tag Types" onAction="#handleViewTagTypes"/> -->
         </HBox>
     </top>
     <center>

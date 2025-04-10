@@ -21,7 +21,7 @@ public class AddTagDialogController {
 
   public void init(User user) {
     this.user = user;
-    tagTypeCombo.getItems().addAll(user.getTagTypeNames());
+    tagTypeCombo.getItems().addAll(user.getTagTypeNamesWithMultiValue());
   }
 
   public boolean isConfirmed() {
