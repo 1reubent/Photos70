@@ -22,10 +22,10 @@
     <center>
         <VBox spacing="10">
             <Label text="Users"/>
-            <ListView fx:id="UserList"/>
+            <ListView fx:id="userListView" VBox.Vgrow="ALWAYS"/>
             <TextField fx:id="usernameField" promptText="Enter username" />
             <Button text="Create User" onAction="#handleCreateUser" />
-            <!-- <Button text="Delete User" onAction="#handleDeleteUser"/> -->
+            <Button text="Delete User" onAction="#handleDeleteUser"/>
         </VBox>
     </center>
 
