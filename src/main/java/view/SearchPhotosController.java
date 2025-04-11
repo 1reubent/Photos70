@@ -26,6 +26,8 @@ public class SearchPhotosController {
   @FXML
   private VBox tagInputContainer;
   @FXML
+  private VBox searchResultsContainer;
+  @FXML
   private Label statusLabel;
 
 
@@ -163,8 +165,8 @@ public class SearchPhotosController {
       createAlbumButton.setOnAction(event -> handleCreateAlbumFromResults(finalSearchResults));
 
       // Display results and button in the UI
-      tagInputContainer.getChildren().clear();
-      tagInputContainer.getChildren().addAll(new Label("Search Results:"), resultsListView, createAlbumButton);
+      searchResultsContainer.getChildren().clear();
+      searchResultsContainer.getChildren().addAll(new Label("Search Results:"), resultsListView, createAlbumButton);
     } else {
       showWarning("No photos found matching the search criteria.");
     }

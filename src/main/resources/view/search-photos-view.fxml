@@ -40,6 +40,10 @@
             </VBox>
 
             <Button text="Search" onAction="#handleSearch" />
+            <VBox fx:id="searchResultsContainer" spacing="10">
+                <!-- Search results will be dynamically added here -->
+            </VBox>
+
         </VBox>
     </center>
     <bottom>

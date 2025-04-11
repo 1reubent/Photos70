@@ -114,7 +114,7 @@ public class UserHomeController {
   public void handleSearchPhotos() {
     try {
       FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/search-photos-view.fxml"));
-      Scene scene = new Scene(loader.load(), 640, 480);
+      Scene scene = new Scene(loader.load(), 640, 600);
       SearchPhotosController controller = loader.getController();
       controller.init(this);
       Stage stage = new Stage();
