@@ -42,8 +42,9 @@ public class Photos extends Application {
     } else {
       // File exists, set the path and load user list
       userListFilePath = resourceUrl.getPath();
-      userList = loadAllUserData().getKey();
-      admin = loadAllUserData().getValue();
+      Pair<UserList, User> data = loadAllUserData();
+      userList = data.getKey();
+      admin = data.getValue();
     }
 
     /*TODO: initialize admin user AND make sure it gets saved*/
@@ -175,6 +176,7 @@ public class Photos extends Application {
     }
   }
 
+  //TODO: should admin be a user?
   private Pair<UserList, User> loadAllUserData() {
     try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(userListFilePath))) {
       userList = (UserList) in.readObject();

@@ -29,7 +29,6 @@
                 <Button text="Copy Photo" onAction="#handleCopyPhoto"/>
                 <Button text="Move Photo" onAction="#handleMovePhoto"/>
                 <Button text="Slideshow" onAction="#handleSlideshow"/>
-                <Button text="Search Photos" onAction="#handleSearchPhotos"/>
             </VBox>
         </HBox>
     </center>

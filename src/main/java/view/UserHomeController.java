@@ -81,6 +81,12 @@ public class UserHomeController {
     }
   }
 
+  @FXML
+  public void handleSearchPhotos() {
+    Alert alert = new Alert(Alert.AlertType.INFORMATION, "Search Photos - Coming Soon!");
+    alert.showAndWait();
+  }
+
   private void showError(String message) {
     Alert alert = new Alert(Alert.AlertType.ERROR, message);
     alert.showAndWait();
@@ -183,5 +189,6 @@ public class UserHomeController {
       e.printStackTrace();
     }
   }
+
 
 }

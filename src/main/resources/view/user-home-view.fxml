@@ -17,6 +17,7 @@
             <!--            <Button text="Remove Tag" onAction="#handleRemoveTag"/>-->
             <Button text="Logout" onAction="#handleLogout"/>
             <Button text="View My Tag Types" onAction="#handleViewTagTypes"/>
+            <Button text="Search Photos" onAction="#handleSearchPhotos"/>
         </HBox>
     </top>
     <center>

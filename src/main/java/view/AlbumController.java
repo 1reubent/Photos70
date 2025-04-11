@@ -379,11 +379,6 @@ public class AlbumController {
     }
   }
 
-  @FXML
-  public void handleSearchPhotos() {
-    Alert alert = new Alert(Alert.AlertType.INFORMATION, "Search Photos - Coming Soon!");
-    alert.showAndWait();
-  }
 
   @FXML
   public void handleBack() {
