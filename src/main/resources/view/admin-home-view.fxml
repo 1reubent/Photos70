@@ -11,21 +11,17 @@
         <HBox spacing="10">
             <padding>
                 <Insets top="10" right="10" bottom="10" left="10"/>
-            </padding>
-<!--            <Button text="Import Photo" onAction="#handleImport"/>-->
-<!--            <Button text="Add Tag" onAction="#handleAddTag"/>-->
-<!--            <Button text="Remove Tag" onAction="#handleRemoveTag"/>-->
-            <!-- <Button text="Logout" onAction="#handleLogout"/> -->
-            <!-- <Button text="Edit My Tag Types" onAction="#handleViewTagTypes"/> -->
+            </padding>            
         </HBox>
     </top>
     <center>
         <VBox spacing="10">
             <Label text="Users"/>
-            <ListView fx:id="UserList"/>
+            <ListView fx:id="userListView" VBox.Vgrow="ALWAYS"/>
             <TextField fx:id="usernameField" promptText="Enter username" />
             <Button text="Create User" onAction="#handleCreateUser" />
-            <!-- <Button text="Delete User" onAction="#handleDeleteUser"/> -->
+            <Button text="Delete User" onAction="#handleDeleteUser"/>
+            <!-- <Button text="Logout" onAction="#handleLogout"/> -->
         </VBox>
     </center>
 
