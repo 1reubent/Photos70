@@ -20,7 +20,7 @@
 ## ✅ **Model Design (Data Layer)**
 - [x] Use **java.io.Serializable** for model classes.
 - [x] Use **ObjectOutputStream/ObjectInputStream** for persistence.
-- [ ] Model Classes:
+- [x] Model Classes:
   - [x] `User`: username, list of albums.
   - [x] `Album`: name, list of photos.
   - [x] `Photo`: file path, caption, date, list of tags.
@@ -111,12 +111,12 @@
 - [x] Navigate photos in album, forward and backward.
 
 ### Search (inside album view)
-- [ ] By **date range**.
-- [ ] By **tag**:
-  - [ ] Single tag-value pair.
-  - [ ] Conjunctive (AND) of two tag-value pairs.
-  - [ ] Disjunctive (OR) of two tag-value pairs.
-- [ ] Create album from search results.
+- [x] By **date range**.
+- [x] By **tag**:
+  - [x] Single tag-value pair.
+  - [x] Conjunctive (AND) of two tag-value pairs.
+  - [x] Disjunctive (OR) of two tag-value pairs.
+- [x] Create album from search results.
 
 ---
 
@@ -152,9 +152,9 @@
   - [x] Ensure data is saved.
   - [x] Application closes cleanly.
 - [x] Prevent duplicate album names **within user**.
-- [ ] Allow duplicate album names **across users**.
-- [ ] Allow multi-user operation:
-  - [ ] After logout, allow new user login without app restart.
+- [x] Allow duplicate album names **across users**.
+- [x] Allow multi-user operation:
+  - [x] After logout, allow new user login without app restart.
 
 ---
 

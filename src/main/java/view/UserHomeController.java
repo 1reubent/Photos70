@@ -33,6 +33,10 @@ public class UserHomeController {
     System.out.println("User logged in: " + user.getUsername());
   }
 
+  //get user
+  public User getUser() {
+    return user;
+  }
   public void populateAlbums() {
     System.out.println(user.getUsername());
     System.out.println(user.getAlbumNames());
@@ -108,8 +112,19 @@ public class UserHomeController {
 
   @FXML
   public void handleSearchPhotos() {
-    Alert alert = new Alert(Alert.AlertType.INFORMATION, "Search Photos - Coming Soon!");
-    alert.showAndWait();
+    try {
+      FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/search-photos-view.fxml"));
+      Scene scene = new Scene(loader.load(), 640, 480);
+      SearchPhotosController controller = loader.getController();
+      controller.init(this);
+      Stage stage = new Stage();
+      stage.setScene(scene);
+      stage.setTitle("Search Photos");
+      stage.show();
+    } catch (IOException e) {
+      // Handle the exception
+      showError("Failed to load search photos view: " + e.getMessage());
+    }
   }
 
 

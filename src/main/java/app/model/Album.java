@@ -23,7 +23,10 @@ public class Album implements Serializable {
   public void setName(String name) { this.name = name; }
 
   public List<Photo> getPhotos() { return photos; }
-
+  //has photo
+  public boolean hasPhoto(Photo photo) {
+    return photos.contains(photo);
+  }
   //get photo by path
   public Photo getPhoto(String path) {
     for (Photo photo : photos) {
@@ -32,6 +35,27 @@ public class Album implements Serializable {
       }
     }
     return null;
+  }
+  //get photos by tag
+  public Set<Photo> getPhotosByTag(Tag tag) {
+    Set<Photo> taggedPhotos = new HashSet<>();
+    for (Photo photo : photos) {
+      if (photo.hasTag(tag)) {
+        taggedPhotos.add(photo);
+      }
+    }
+    return taggedPhotos;
+  }
+
+  //get photos in date range
+  public Set<Photo> getPhotosInDateRange(LocalDateTime start, LocalDateTime end) {
+    Set<Photo> dateRangePhotos = new HashSet<>();
+    for (Photo photo : photos) {
+      if (photo.getDateTaken().isAfter(start) && photo.getDateTaken().isBefore(end)) {
+        dateRangePhotos.add(photo);
+      }
+    }
+    return dateRangePhotos;
   }
 
   public void addPhoto(Photo photo) {

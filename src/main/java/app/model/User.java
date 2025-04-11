@@ -1,6 +1,7 @@
 package app.model;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.*;
 
 public class User implements Serializable {
@@ -17,6 +18,59 @@ public class User implements Serializable {
   addTagType("people", true);
   }
 
+  //get photos by single tag
+  public List<Photo> getPhotosWithSingleTag(Tag tag) {
+    Set<Photo> taggedPhotos = new HashSet<>();
+    for (Album album : albums.values()) {
+      taggedPhotos.addAll(album.getPhotosByTag(tag));
+    }
+    return new ArrayList<>(taggedPhotos);
+  }
+  //get photos by with 2 tags (both i.e. conjunctive)
+  public List<Photo> getPhotosWithBothTags(Tag tag1, Tag tag2) {
+    Set<Photo> photosWithTag1 = new HashSet<>();
+    Set<Photo> photosWithTag2 = new HashSet<>();
+
+    for (Album album : albums.values()) {
+      photosWithTag1.addAll(album.getPhotosByTag(tag1));
+      photosWithTag2.addAll(album.getPhotosByTag(tag2));
+    }
+
+    photosWithTag1.retainAll(photosWithTag2); // Retain only photos present in both sets
+    return new ArrayList<>(photosWithTag1); // Convert the result to a list
+  }
+
+  //get photos by with 2 tags (either i.e. disjunctive)
+  public List<Photo> getPhotosWithEitherTag(Tag tag1, Tag tag2) {
+   Set<Photo> photosWithTags = new HashSet<>();
+
+    for (Album album : albums.values()) {
+      photosWithTags.addAll(album.getPhotosByTag(tag1));
+      photosWithTags.addAll(album.getPhotosByTag(tag2));
+    }
+
+    return new ArrayList<>(photosWithTags);
+  }
+
+  //filter photos by date range
+  public List<Photo> getPhotosInDateRange(LocalDateTime start, LocalDateTime end) {
+    Set<Photo> dateRangePhotos = new HashSet<>();
+    for (Album album : albums.values()) {
+      dateRangePhotos.addAll(album.getPhotosInDateRange(start, end));
+    }
+    return new ArrayList<>(dateRangePhotos);
+  }
+
+  //get albums containing a specific photo
+  public List<Album> getAlbumsContainingPhoto(Photo photo) {
+    List<Album> containingAlbums = new ArrayList<>();
+    for (Album album : albums.values()) {
+      if (album.hasPhoto(photo)) {
+        containingAlbums.add(album);
+      }
+    }
+    return containingAlbums;
+  }
   public String getUsername() {
     return username;
   }

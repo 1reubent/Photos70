@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<BorderPane xmlns:fx="http://javafx.com/fxml" fx:controller="view.SearchPhotosController">
+    <top>
+        <Label text="Search Photos" style="-fx-font-size: 16px; -fx-font-weight: bold;" />
+    </top>
+    <center>
+        <VBox spacing="20">
+            <padding>
+                <Insets top="10" bottom="10" left="10" right="10"/>
+            </padding>
+
+            <!-- Search by Date Section -->
+            <VBox spacing="10">
+                <Label text="Search by Date" style="-fx-font-size: 14px; -fx-font-weight: bold;" />
+                <HBox spacing="10">
+                    <Label text="Start Date:" />
+                    <DatePicker fx:id="startDatePicker" />
+                    <Label text="End Date:" />
+                    <DatePicker fx:id="endDatePicker" />
+                </HBox>
+            </VBox>
+
+            <!-- Search by Tag Section -->
+            <VBox spacing="10">
+                <Label text="Search by Tag" style="-fx-font-size: 14px; -fx-font-weight: bold;" />
+                <HBox>
+                    <ToggleButton text="Single Tag" fx:id="singleTagToggle"
+                                  style="-fx-background-radius: 10 0 0 10; -fx-border-color: #ccc; -fx-border-width: 1 0 1 1; -fx-border-radius: 10 0 0 10;" />
+                    <ToggleButton text="Conjunctive (AND)" fx:id="conjunctiveToggle"
+                                  style="-fx-background-radius: 0; -fx-border-color: #ccc; -fx-border-width: 1 0 1 0; -fx-border-radius: 0;" />
+                    <ToggleButton text="Disjunctive (OR)" fx:id="disjunctiveToggle"
+                                  style="-fx-background-radius: 0 10 10 0; -fx-border-color: #ccc; -fx-border-width: 1 1 1 0; -fx-border-radius: 0 10 10 0;" />
+                </HBox>
+                <VBox spacing="10" fx:id="tagInputContainer">
+                    <!-- Dynamic tag input fields will be shown here -->
+                </VBox>
+            </VBox>
+
+            <Button text="Search" onAction="#handleSearch" />
+        </VBox>
+    </center>
+    <bottom>
+        <Label fx:id="statusLabel">
+            <padding>
+                <Insets top="10" right="10" bottom="10" left="10"/>
+            </padding>
+        </Label>
+    </bottom>
+</BorderPane>
