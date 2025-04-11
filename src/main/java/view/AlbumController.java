@@ -65,6 +65,30 @@ public class AlbumController {
     });
   }
 
+  //show warning
+  private void showWarning(String message) {
+    Alert alert = new Alert(Alert.AlertType.WARNING, message);
+    alert.setTitle("Warning");
+    alert.setHeaderText("Warning");
+    alert.showAndWait();
+  }
+
+  //show error
+  private void showError(String message) {
+    Alert alert = new Alert(Alert.AlertType.ERROR, message);
+    alert.setTitle("Error");
+    alert.setHeaderText("Error");
+    alert.showAndWait();
+  }
+
+  //show confirmation
+  private Optional<ButtonType> showConfirmation(String message) {
+    Alert alert = new Alert(Alert.AlertType.CONFIRMATION, message);
+    alert.setTitle("Confirmation");
+    alert.setHeaderText("Confirmation");
+    return alert.showAndWait();
+  }
+
   @FXML
   public void handleAddPhoto() {
     FileChooser fileChooser = new FileChooser();
@@ -97,37 +121,30 @@ public class AlbumController {
         populatePhotos();
         statusLabel.setText("Photo added: " + selectedFile.getName());
       } catch (IllegalArgumentException | IllegalStateException e) {
-        Alert alert = new Alert(Alert.AlertType.WARNING, e.getMessage());
-        alert.showAndWait();
+        showWarning(e.getMessage());
       }
     }
   }
 
   @FXML
   public void handleRemovePhoto() {
-    //TODO: are you sure you want to remove this photo from the album?
     Photo selectedPhoto = photoList.getSelectionModel().getSelectedItem();
     if (selectedPhoto != null) {
       // are you sure you want to remove this photo from the album?
-      Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Are you sure you want to remove this photo from the album?");
-      alert.setTitle("Remove Photo");
-      alert.setHeaderText("Remove Photo");
-      alert.setContentText("Are you sure you want to remove this photo from the album?");
-      Optional<ButtonType> result = alert.showAndWait();
+      Optional<ButtonType> result = showConfirmation("Are you sure you want to remove this photo from the album?");
       if (result.isPresent() && result.get() == ButtonType.OK) {
         try {
           album.removePhoto(selectedPhoto);
         } catch (IllegalArgumentException e) {
-          Alert alert2 = new Alert(Alert.AlertType.ERROR, e.getMessage());
-          alert2.showAndWait();
+          showError(e.getMessage());
         }
         populatePhotos();
         statusLabel.setText("Photo removed: " + selectedPhoto.getName());
       }
 
     } else {
-      Alert alert = new Alert(Alert.AlertType.WARNING, "No photo selected!");
-      alert.showAndWait();
+      // show warning
+      showWarning("No photo selected!");
     }
   }
 
@@ -145,8 +162,8 @@ public class AlbumController {
         statusLabel.setText("Caption added: " + caption);
       });
     } else {
-      Alert alert = new Alert(Alert.AlertType.WARNING, "No photo selected!");
-      alert.showAndWait();
+      // show warning
+      showWarning("No photo selected!");
     }
   }
 
@@ -167,11 +184,11 @@ public class AlbumController {
         stage.setTitle("Photo Details - " + new File(selectedPhoto.getPath()).getName());
         stage.show();
       } catch (IOException e) {
-        e.printStackTrace();
+        // show error
+        showError("Error loading photo details: " + e.getMessage());
       }
     } else {
-      Alert alert = new Alert(Alert.AlertType.WARNING, "No photo selected!");
-      alert.showAndWait();
+      showWarning("No photo selected!");
     }
   }
 
@@ -200,9 +217,9 @@ public class AlbumController {
           System.out.println(user.getTagTypes());
           System.out.println(tagType);
           if (!tagType.isMultiValue() && selectedPhoto.hasTagType(tagType)) {
-            Alert alert = new Alert(Alert.AlertType.ERROR,
-                    "'" + tagType + "' tag type does not allow multiple values. Please remove the existing tag from '" + selectedPhoto.getName() + "' before adding a new one.");
-            alert.showAndWait();
+            // show error
+            showError("'" + tagType + "' tag type does not allow multiple values. Please remove the existing tag from '"
+                    + selectedPhoto.getName() + "' before adding a new one.");
             return;
           }
 
@@ -211,12 +228,13 @@ public class AlbumController {
             selectedPhoto.addTag(tag);
             statusLabel.setText("Tag added: " + tag);
           } catch (IllegalArgumentException | IllegalStateException e) {
-            Alert alert = new Alert(Alert.AlertType.ERROR, e.getMessage());
-            alert.showAndWait();
+            // show error
+            showError(e.getMessage());
           }
         }
       } catch (IOException e) {
-        e.printStackTrace();
+        //Handle IOException
+        showError("Error loading add tag dialog: " + e.getMessage());
       }
     } else {
       Alert alert = new Alert(Alert.AlertType.WARNING, "No photo selected!");
@@ -248,16 +266,17 @@ public class AlbumController {
             selectedPhoto.removeTag(tagToRemove);
             statusLabel.setText("Tag removed: " + tagToRemove);
           } else {
-            Alert alert = new Alert(Alert.AlertType.WARNING, "No tag selected!");
-            alert.showAndWait();
+            // show warning
+            showWarning("No tag selected!");
           }
         }
       } catch (IOException e) {
-        e.printStackTrace();
+        // Handle IOException
+        showError("Error loading remove tag dialog: " + e.getMessage());
       }
     } else {
-      Alert alert = new Alert(Alert.AlertType.WARNING, "No photo selected!");
-      alert.showAndWait();
+      // show warning
+      showWarning("No photo selected!");
     }
   }
 
@@ -286,20 +305,21 @@ public class AlbumController {
               targetAlbum.addPhoto(selectedPhoto);
               statusLabel.setText("Photo copied to album: " + targetAlbum.getName());
             } catch (IllegalArgumentException | IllegalStateException e) {
-              Alert alert = new Alert(Alert.AlertType.ERROR, e.getMessage());
-              alert.showAndWait();
+              //catch add photo exception.
+              showError(e.getMessage());
             }
           } else {
-            Alert alert = new Alert(Alert.AlertType.WARNING, "No album selected!");
-            alert.showAndWait();
+            // show warning
+            showWarning("No album selected!");
           }
         }
       } catch (IOException e) {
-        e.printStackTrace();
+        // Handle IOException
+        showError("Error loading select album dialog: " + e.getMessage());
       }
     } else {
-      Alert alert = new Alert(Alert.AlertType.WARNING, "No photo selected!");
-      alert.showAndWait();
+      // show warning
+      showWarning("No photo selected!");
     }
   }
 
@@ -337,28 +357,26 @@ public class AlbumController {
               }
             } catch (IllegalArgumentException | IllegalStateException e) {
               //catch remove photo OR re-thrown add photo exception
-              Alert alert = new Alert(Alert.AlertType.ERROR, e.getMessage());
-              alert.showAndWait();
+              showError(e.getMessage());
             }
           } else {
-            Alert alert = new Alert(Alert.AlertType.WARNING, "No album selected!");
-            alert.showAndWait();
+            showWarning("No album selected!");
           }
         }
       } catch (IOException e) {
-        e.printStackTrace();
+        // Handle IOException
+        showError("Error loading select album dialog: " + e.getMessage());
       }
     } else {
-      Alert alert = new Alert(Alert.AlertType.WARNING, "No photo selected!");
-      alert.showAndWait();
+      showWarning("No photo selected!");
     }
   }
 
   @FXML
   public void handleSlideshow() {
     if (album.getPhotos().isEmpty()) {
-      Alert alert = new Alert(Alert.AlertType.WARNING, "No photos available in the album for slideshow!");
-      alert.showAndWait();
+      // show warning
+      showWarning("No photos available in the album for slideshow!");
       return;
     }
 
@@ -375,7 +393,8 @@ public class AlbumController {
       slideshowStage.setTitle("Slideshow");
       slideshowStage.show();
     } catch (IOException e) {
-      e.printStackTrace();
+      // handle IOException
+      showError("Error loading slideshow view: " + e.getMessage());
     }
   }
 
@@ -385,7 +404,8 @@ public class AlbumController {
     try {
       app.switchToUserHomeView((Stage) photoList.getScene().getWindow(), user.getUsername());
     } catch (IOException e) {
-      e.printStackTrace();
+      // handle IOException
+      showError("Error loading user home view: " + e.getMessage());
     }
   }
 }

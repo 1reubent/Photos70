@@ -7,6 +7,7 @@ import app.model.UserList;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.stage.Stage;
 import javafx.util.Pair;
 import view.LoginController;
@@ -19,10 +20,7 @@ import java.util.Map;
 
 public class Photos extends Application {
   private UserList userList;
-  private User admin;
   private Scene loginScene;
-  private Scene adminHomeScene;
-  private Map<String, Pair<Scene, UserHomeController>> userHomeScenes = new HashMap<>();
   private static String userListFilePath = null; // initialized in start method
 //  private Map<String, Object> userData = new HashMap<>();
 
@@ -42,21 +40,8 @@ public class Photos extends Application {
     } else {
       // File exists, set the path and load user list
       userListFilePath = resourceUrl.getPath();
-      Pair<UserList, User> data = loadAllUserData();
-      userList = data.getKey();
-      admin = data.getValue();
+      userList = loadAllUserData();
     }
-
-    /*TODO: initialize admin user AND make sure it gets saved*/
-    //print admin user
-//    if (admin == null) {
-//      admin = userList.addUser( new User("admin"));
-//      // print that admin user has been initialized
-//      System.out.println("Admin user initialized:" + admin);
-//    }else{
-//      // print that admin user already exists
-//      System.out.println("Admin user loaded:" + admin);
-//    }
 
     /* INITIALIZE STOCK USER */
     if (!userList.hasUser("stock")) {
@@ -95,56 +80,50 @@ public class Photos extends Application {
     }
     Album.setInitializingStock(false);
 
-    try {
-      saveAllUserData();
-    } catch (IOException e) {
-      throw new RuntimeException(e);
-    }
+   saveAllUserData();
   }
 
   public UserList getUserList() {
     return userList;
   }
 
-  public User getAdmin() {
-    return admin;
-  }
-
   public void switchToUserHomeView(Stage stage, String username) throws IOException {
-    if (!userHomeScenes.containsKey(username)) {
-      FXMLLoader userHomeLoader = new FXMLLoader(getClass().getResource("/view/user-home-view.fxml"));
-      Scene userHomeScene = new Scene(userHomeLoader.load(), 640, 650);
-      UserHomeController userHomeController = userHomeLoader.getController();
-      userHomeController.init(this, userList.getUser(username));
-      userHomeScenes.put(username, new Pair<>(userHomeScene, userHomeController));
-    } else {
-      // Run populate albums before switching to the scene
-      userHomeScenes.get(username).getValue().populateAlbums();
+    try {
+        FXMLLoader userHomeLoader = new FXMLLoader(getClass().getResource("/view/user-home-view.fxml"));
+        Scene userHomeScene = new Scene(userHomeLoader.load(), 640, 650);
+        UserHomeController userHomeController = userHomeLoader.getController();
+        userHomeController.init(this, userList.getUser(username));
+        // userHomeScenes.put(username, new Pair<>(userHomeScene, userHomeController));
+
+        stage.setScene(userHomeScene);
+        stage.setTitle("Photo Album " + "(User: " + username + ")"); // Set the title to the username
+    } catch (IOException e) {
+        showError("Failed to load user home view: " + e.getMessage());
     }
-    stage.setScene(userHomeScenes.get(username).getKey());
-    stage.setTitle("Photo Album " + "(User: " + username + ")"); // Set the title to the username
 
   }
 
-  // TODO: Implement the admin home view
   // its init method must take the app as a parameter, and the admin user
-  // need to save admin user to disk
-  // need to save admin controller and scene.
   public void switchToAdminHomeView(Stage stage) throws IOException {
-    if (adminHomeScene == null) {
-      FXMLLoader adminHomeLoader = new FXMLLoader(getClass().getResource("/view/admin-home-view.fxml"));
-      adminHomeScene = new Scene(adminHomeLoader.load());
-      AdminHomeController adminHomeController = adminHomeLoader.getController();
+   try {
+        FXMLLoader adminHomeLoader = new FXMLLoader(getClass().getResource("/view/admin-home-view.fxml"));
+        Scene adminHomeScene = new Scene(adminHomeLoader.load());
+        AdminHomeController adminHomeController = adminHomeLoader.getController();
 
-      // pass the user list
-      adminHomeController.init(this, userList);
-
+        // pass the user list
+        adminHomeController.init(this, userList);
+        stage.setScene(adminHomeScene);
+    } catch (IOException e) {
+        showError("Failed to load admin home view: " + e.getMessage());
     }
-    stage.setScene(adminHomeScene);
   }
 
   public void switchToLoginView(Stage stage) {
-    stage.setScene(loginScene);
+   try {
+        stage.setScene(loginScene);
+    } catch (Exception e) {
+        showError("Failed to switch to login view: " + e.getMessage());
+    }
   }
 
   @Override
@@ -169,23 +148,33 @@ public class Photos extends Application {
 //    userData.clear();
 //  }
   /* PERSISTENCE METHODS */
-  private void saveAllUserData() throws IOException {
+  private void saveAllUserData() {
     try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(userListFilePath))) {
       out.writeObject(userList);
-      out.writeObject(admin); // Save the admin user
+    }catch (Exception e) {
+      // Handle the exception
+      showError("Failed to save user data: " + e.getMessage());
     }
   }
 
   //TODO: should admin be a user?
-  private Pair<UserList, User> loadAllUserData() {
+  private UserList loadAllUserData() {
     try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(userListFilePath))) {
       userList = (UserList) in.readObject();
-      admin = (User) in.readObject(); // Load the admin user
-      return new Pair<>(userList, admin);
+      return userList;
     } catch (IOException | ClassNotFoundException e) {
-      e.printStackTrace();
+      // Handle the exception
+      showError("Failed to load user data: " + e.getMessage());
       return null;
     }
+  }
+  //show error in a dialog
+  public void showError(String message) {
+    Alert alert = new Alert(Alert.AlertType.ERROR);
+    alert.setTitle("Error");
+    alert.setHeaderText("Error");
+    alert.setContentText(message);
+    alert.showAndWait();
   }
 
   public static void main(String[] args) {

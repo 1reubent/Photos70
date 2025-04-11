@@ -5,9 +5,11 @@ import app.model.User;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 
+import java.util.Optional;
+
 public class ViewTagTypesController {
   @FXML
-private ListView<TagType> tagTypeList;
+  private ListView<TagType> tagTypeList;
   @FXML
   private TextField newTagTypeField;
   @FXML
@@ -49,21 +51,16 @@ private ListView<TagType> tagTypeList;
           showError("Cannot remove default tag types: location and people.");
           return;
         }
-        Alert confirmationAlert = new Alert(Alert.AlertType.CONFIRMATION);
-        confirmationAlert.setTitle("Remove Tag Type");
-        confirmationAlert.setHeaderText("Are you sure you want to remove this tag type?");
-        confirmationAlert.setContentText("This will remove all tags of this type from all your photos.");
-        confirmationAlert.showAndWait().ifPresent(response -> {
-          if (response == ButtonType.OK) {
-            if (user.removeTagType(selectedTagType.getName())) {
-              tagTypeList.getItems().remove(selectedTagType);
-              removeTagsFromPhotos(selectedTagType);
-              showInfo("Tag type and associated tags removed successfully.");
-            } else {
-              showError("Failed to remove tag type.");
-            }
+        Optional<ButtonType> result = showConfirmation("Are you sure you want to remove this tag type?\n\nThis will remove all tags of this type from all your photos.");
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+          if (user.removeTagType(selectedTagType.getName())) {
+            tagTypeList.getItems().remove(selectedTagType);
+            removeTagsFromPhotos(selectedTagType);
+            showInfo("Tag type and associated tags removed successfully.");
+          } else {
+            showError("Failed to remove tag type.");
           }
-        });
+        }
       } else {
         showError("No tag type selected!");
       }
@@ -78,13 +75,26 @@ private ListView<TagType> tagTypeList;
     });
   }
 
+  //TODO: do we need this?
   private void showInfo(String message) {
     Alert alert = new Alert(Alert.AlertType.INFORMATION, message);
+    alert.setTitle("Information");
+    alert.setHeaderText("Information");
     alert.showAndWait();
   }
 
   private void showError(String message) {
     Alert alert = new Alert(Alert.AlertType.ERROR, message);
+    alert.setTitle("Error");
+    alert.setHeaderText("Error");
     alert.showAndWait();
+  }
+
+  //show confirmation dialog
+  private Optional<ButtonType> showConfirmation(String message) {
+    Alert alert = new Alert(Alert.AlertType.CONFIRMATION, message);
+    alert.setTitle("Confirmation");
+    alert.setHeaderText("Confirmation");
+    return alert.showAndWait();
   }
 }

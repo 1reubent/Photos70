@@ -13,13 +13,15 @@ public class UserList implements Serializable {
   public UserList() {
     users = new HashMap<>();
   }
+
   //add user from name
   public User addUser(String username) {
-    if (hasUser(username)) return null;
+    if (hasUser(username)) throw new IllegalArgumentException("User already exists: " + username);
     User new_user = new User(username);
     users.put(username, new_user);
     return new_user;
   }
+
   //add user from user object
   public User addUser(User user) {
     if (hasUser(user.getUsername())) return null;

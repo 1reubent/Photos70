@@ -60,7 +60,8 @@ public class LoginController {
     try {
       app.switchToAdminHomeView((Stage) usernameField.getScene().getWindow());
     } catch (IOException e) {
-      e.printStackTrace();
+      // handle exception
+      showErrorDialog("Error loading Admin View: " + e.getMessage());
     }
   }
 
@@ -68,7 +69,16 @@ public class LoginController {
     try {
       app.switchToUserHomeView((Stage) usernameField.getScene().getWindow(), username);
     } catch (IOException e) {
-      e.printStackTrace();
+      showErrorDialog("Error loading User view: " + e.getMessage());
     }
+  }
+
+  // shows error dialog
+  private void showErrorDialog(String message) {
+    Alert alert = new Alert(Alert.AlertType.ERROR);
+    alert.setTitle("Error");
+    alert.setHeaderText("Error");
+    alert.setContentText(message);
+    alert.showAndWait();
   }
 }

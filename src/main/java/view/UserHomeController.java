@@ -11,6 +11,7 @@ import javafx.scene.Scene;
 import app.model.User;
 
 import java.io.IOException;
+import java.util.Optional;
 
 
 public class UserHomeController {
@@ -54,6 +55,29 @@ public class UserHomeController {
     });
   }
 
+  //show status message
+  public void setStatusMessage(String message) {
+    statusLabel.setText(message);
+  }
+
+  //show error
+  public void showError(String message) {
+    Alert alert = new Alert(Alert.AlertType.ERROR, message);
+    alert.showAndWait();
+  }
+
+  //show warning
+  public void showWarning(String message) {
+    Alert alert = new Alert(Alert.AlertType.WARNING, message);
+    alert.showAndWait();
+  }
+
+  //show confirmation
+  public Optional<ButtonType> showConfirmation(String message) {
+    Alert alert = new Alert(Alert.AlertType.CONFIRMATION, message);
+    return alert.showAndWait();
+  }
+
   @FXML
   public void handleLogout() {
     // data changes are saved to disk when the app is closed. until then, they are held in memory.
@@ -77,18 +101,14 @@ public class UserHomeController {
       dialog.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
       dialog.showAndWait();
     } catch (IOException e) {
-      e.printStackTrace();
+      // Handle the exception
+      showError("Failed to load tag types dialog: " + e.getMessage());
     }
   }
 
   @FXML
   public void handleSearchPhotos() {
     Alert alert = new Alert(Alert.AlertType.INFORMATION, "Search Photos - Coming Soon!");
-    alert.showAndWait();
-  }
-
-  private void showError(String message) {
-    Alert alert = new Alert(Alert.AlertType.ERROR, message);
     alert.showAndWait();
   }
 
@@ -114,31 +134,24 @@ public class UserHomeController {
     if (selectedAlbum != null) {
       //cannot delete stock album
       if (selectedAlbum.getName().equalsIgnoreCase("stock")) {
-        Alert alert = new Alert(Alert.AlertType.WARNING, "Cannot delete stock album!");
-        alert.setTitle("Delete Album");
-        alert.setHeaderText("Stock album cannot be deleted.");
-        alert.showAndWait();
+        //show warning
+        showWarning("Cannot delete stock album!");
         return;
       }
       if (selectedAlbum.getPhotoCount() > 0) {
-        Alert alert = new Alert(Alert.AlertType.WARNING, "Album is not empty! Cannot delete.");
-        alert.showAndWait();
+        showWarning("Album is not empty! Cannot delete.");
         return;
       }
-      Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Are you sure you want to delete this album?");
-      alert.setTitle("Delete Album");
-      alert.showAndWait().ifPresent(response -> {
-        if (response == ButtonType.OK) {
-          user.deleteAlbum(selectedAlbum.getName());
-          populateAlbums();
-        }
-      });
+      Optional<ButtonType> result = showConfirmation("Are you sure you want to delete this album?");
+      if (result.isPresent() && result.get() == ButtonType.OK) {
+        user.deleteAlbum(selectedAlbum.getName());
+        populateAlbums();
+        //set status message
+        setStatusMessage("Album deleted: " + selectedAlbum.getName());
+      }
     } else {
-      Alert alert = new Alert(Alert.AlertType.WARNING, "No album selected!");
-      alert.setTitle("Delete Album");
-      alert.setHeaderText("No album selected.");
-      alert.setContentText("Please select an album to delete.");
-      alert.showAndWait();
+      //show warning
+      showWarning("No album selected!");
     }
   }
 
@@ -148,10 +161,8 @@ public class UserHomeController {
     if (selectedAlbum != null) {
       //cannot rename stock album
       if (selectedAlbum.getName().equalsIgnoreCase("stock")) {
-        Alert alert = new Alert(Alert.AlertType.WARNING, "Cannot rename stock album!");
-        alert.setTitle("Rename Album");
-        alert.setHeaderText("Stock album cannot be renamed.");
-        alert.showAndWait();
+        //show warning
+        showWarning("Cannot rename stock album!");
         return;
       }
       TextInputDialog dialog = new TextInputDialog(selectedAlbum.getName());
@@ -162,6 +173,9 @@ public class UserHomeController {
         user.renameAlbum(selectedAlbum.getName(), newName);
         populateAlbums();
       });
+    }else{
+      //show warning
+      showWarning("No album selected!");
     }
   }
 
@@ -170,9 +184,9 @@ public class UserHomeController {
     Album selectedAlbum = albumList.getSelectionModel().getSelectedItem();
     if (selectedAlbum != null) {
       openAlbumView(selectedAlbum);
-    } else {
-      Alert alert = new Alert(Alert.AlertType.WARNING, "No album selected!");
-      alert.showAndWait();
+    } else{
+      //show warning
+      showWarning("No album selected!");
     }
   }
 
@@ -184,9 +198,10 @@ public class UserHomeController {
       controller.init(app, user, album);
       Stage stage = (Stage) albumList.getScene().getWindow();
       stage.setScene(scene);
-      stage.setTitle("Viewing Album: " + album.getName()); // Set the title to the album's nam
+      stage.setTitle("Viewing Album: " + album.getName()); // Set the title to the album's name
     } catch (IOException e) {
-      e.printStackTrace();
+      // Handle the exception
+      showError("Failed to load album view: " + e.getMessage());
     }
   }
 
