@@ -30,8 +30,9 @@ public class AdminHomeController {
     }
 
     public void populateUsers() {
-        // Clear and repopulate the ObservableList with updated usernames
+        // Clear and repopulate the ObservableList with updated and sorted usernames
         observableUserList.setAll(userList.getAllUsernames());
+        FXCollections.sort(observableUserList); // Sort the list alphabetically
     }
 
     @FXML
@@ -60,5 +61,11 @@ public class AdminHomeController {
             System.out.println("Error deleting user: " + e.getMessage());
         }
     }
+
+    //Need to add Logout button for Admin
+
+    @FXML
+    public void handleLogout() {}
+
 
 }

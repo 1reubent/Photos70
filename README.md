@@ -25,7 +25,7 @@
   - [x] `Album`: name, list of photos.
   - [x] `Photo`: file path, caption, date, list of tags.
   - [x] `Tag`: name, value.
-  - [ ] `Admin`: handles user creation/deletion.
+  - [x] `Admin`: handles user creation/deletion.
   - [x] `TagType`: pre-defined and user-defined tag types.
 - [ ] Ensure:
   - [ ] Proper equals/hashCode for comparing tags and photos.
@@ -61,10 +61,10 @@
 ---
 
 ## ✅ **Admin Subsystem**
-- [ ] List existing users.
-- [ ] Create new user.
-- [ ] Delete existing user.
-- [ ] Use GUI only (no console).
+- [x] List existing users.
+- [x] Create new user.
+- [x] Delete existing user.
+- [x] Use GUI only (no console).
 - [ ] Validate:
   - [ ] No duplicate usernames.
   - [ ] Handle errors gracefully in GUI.
