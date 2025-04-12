@@ -5,6 +5,7 @@ import app.model.UserList;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
@@ -20,6 +21,13 @@ public class AdminHomeController {
     private Photos app;
     private UserList userList;
     private ObservableList<String> observableUserList;
+
+    public void showWarning(String message) {
+        
+        Alert alert = new Alert(Alert.AlertType.WARNING, message);
+        alert.showAndWait();
+
+    }
 
     public void init(Photos app, UserList userList) {
         this.app = app;
@@ -54,7 +62,20 @@ public class AdminHomeController {
     public void handleDeleteUser() {
         try {
             String selectedUsername = userListView.getSelectionModel().getSelectedItem();
-            if (selectedUsername != null) {
+
+            if (selectedUsername == null) {
+                showWarning("Please select a user to delete.");
+                return;
+            }
+
+            if (selectedUsername.equals("stock")){
+
+                showWarning("Cannot delete stock album!");
+                return;
+
+            }
+
+            else if (selectedUsername != null) {
                 userList.deleteUser(selectedUsername); // Remove user from the backend list
                 populateUsers(); // Refresh the ObservableList
             }
