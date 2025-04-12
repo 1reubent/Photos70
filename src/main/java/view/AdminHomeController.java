@@ -44,11 +44,29 @@ public class AdminHomeController {
         FXCollections.sort(observableUserList); // Sort the list alphabetically
     }
 
+    private boolean isDuplicateUser(String username) {
+        return userList.getAllUsernames().contains(username);
+    }
+
     @FXML
     public void handleCreateUser() {
         try {
             String username = usernameField.getText().trim();
-            if (!username.isEmpty()) {
+
+            if (username.equals("admin")){
+
+                showWarning("Cannot create user with username 'admin'.");
+                return;
+            }
+
+            else if (isDuplicateUser(username)) {
+              
+                showWarning("User already exists. Please choose a different username.");
+                return;  
+
+            }
+
+            else if (!username.isEmpty()) {
                 userList.addUser(username); // Add user to the backend list
                 populateUsers(); // Refresh the ObservableList
                 usernameField.clear(); // Clear the input field
@@ -90,4 +108,4 @@ public class AdminHomeController {
         app.switchToLoginView((Stage) userListView.getScene().getWindow());
 
     }
-}   
+}

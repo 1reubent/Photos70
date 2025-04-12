@@ -67,7 +67,7 @@
 - [x] Use GUI only (no console).
 - [ ] Validate:
   - [x] No duplicate usernames.
-  - [ ] Handle errors gracefully in GUI.
+  - [x] Handle errors gracefully in GUI.
 
 ---
 
