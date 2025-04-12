@@ -133,13 +133,13 @@
 - [x] Use **JavaFX** and **FXML** only.
 - [ ] No console input/output.
 - [ ] Graceful error handling (alerts, dialogs).
-- [ ] User-friendly navigation:
+- [x] User-friendly navigation:
   - [x] Login screen
-  - [ ] Admin panel
+  - [x] Admin panel
   - [x] Album list view
   - [x] Album photo view
   - [x] Photo detail view
-  - [ ] Search results view
+  - [x] Search results view
 - [x] Manual slideshow controls.
 
 ---
