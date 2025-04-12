@@ -21,7 +21,7 @@
             <TextField fx:id="usernameField" promptText="Enter username" />
             <Button text="Create User" onAction="#handleCreateUser" />
             <Button text="Delete User" onAction="#handleDeleteUser"/>
-            <!-- <Button text="Logout" onAction="#handleLogout"/> -->
+            <Button text="Logout" onAction="#handleLogout"/>
         </VBox>
     </center>
 

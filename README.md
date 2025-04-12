@@ -66,7 +66,7 @@
 - [x] Delete existing user.
 - [x] Use GUI only (no console).
 - [ ] Validate:
-  - [ ] No duplicate usernames.
+  - [x] No duplicate usernames.
   - [ ] Handle errors gracefully in GUI.
 
 ---

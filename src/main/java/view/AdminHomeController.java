@@ -7,6 +7,7 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
+import javafx.stage.Stage;
 
 public class AdminHomeController {
 
@@ -62,10 +63,10 @@ public class AdminHomeController {
         }
     }
 
-    //Need to add Logout button for Admin
-
     @FXML
-    public void handleLogout() {}
+    public void handleLogout() {
+        
+        app.switchToLoginView((Stage) userListView.getScene().getWindow());
 
-
-}
+    }
+}   
