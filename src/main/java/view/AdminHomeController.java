@@ -5,6 +5,7 @@ import app.model.UserList;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
@@ -21,6 +22,13 @@ public class AdminHomeController {
     private UserList userList;
     private ObservableList<String> observableUserList;
 
+    public void showWarning(String message) {
+        
+        Alert alert = new Alert(Alert.AlertType.WARNING, message);
+        alert.showAndWait();
+
+    }
+
     public void init(Photos app, UserList userList) {
         this.app = app;
         this.userList = userList;
@@ -36,11 +44,29 @@ public class AdminHomeController {
         FXCollections.sort(observableUserList); // Sort the list alphabetically
     }
 
+    private boolean isDuplicateUser(String username) {
+        return userList.getAllUsernames().contains(username);
+    }
+
     @FXML
     public void handleCreateUser() {
         try {
             String username = usernameField.getText().trim();
-            if (!username.isEmpty()) {
+
+            if (username.equals("admin")){
+
+                showWarning("Cannot create user with username 'admin'.");
+                return;
+            }
+
+            else if (isDuplicateUser(username)) {
+              
+                showWarning("User already exists. Please choose a different username.");
+                return;  
+
+            }
+
+            else if (!username.isEmpty()) {
                 userList.addUser(username); // Add user to the backend list
                 populateUsers(); // Refresh the ObservableList
                 usernameField.clear(); // Clear the input field
@@ -54,7 +80,20 @@ public class AdminHomeController {
     public void handleDeleteUser() {
         try {
             String selectedUsername = userListView.getSelectionModel().getSelectedItem();
-            if (selectedUsername != null) {
+
+            if (selectedUsername == null) {
+                showWarning("Please select a user to delete.");
+                return;
+            }
+
+            if (selectedUsername.equals("stock")){
+
+                showWarning("Cannot delete stock album!");
+                return;
+
+            }
+
+            else if (selectedUsername != null) {
                 userList.deleteUser(selectedUsername); // Remove user from the backend list
                 populateUsers(); // Refresh the ObservableList
             }
@@ -69,4 +108,4 @@ public class AdminHomeController {
         app.switchToLoginView((Stage) userListView.getScene().getWindow());
 
     }
-}   
+}
