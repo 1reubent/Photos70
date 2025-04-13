@@ -12,32 +12,63 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
+/**
+ * Controller for searching photos based on date range and tags.
+ * This class handles the logic for filtering photos and displaying search results.
+ * @author Reuben Thomas, Ryan Zaken
+ */
 public class SearchPhotosController {
+
+  /** DatePicker for selecting the start date of the search range. */
   @FXML
   private DatePicker startDatePicker;
+
+  /** DatePicker for selecting the end date of the search range. */
   @FXML
   private DatePicker endDatePicker;
+
+  /** ToggleButton for selecting single tag search mode. */
   @FXML
   private ToggleButton singleTagToggle;
+
+  /** ToggleButton for selecting conjunctive tag search mode. */
   @FXML
   private ToggleButton conjunctiveToggle;
+
+  /** ToggleButton for selecting disjunctive tag search mode. */
   @FXML
   private ToggleButton disjunctiveToggle;
+
+  /** VBox container for dynamically adding tag input fields. */
   @FXML
   private VBox tagInputContainer;
+
+  /** VBox container for displaying search results. */
   @FXML
   private VBox searchResultsContainer;
+
+  /** Label for displaying status messages. */
   @FXML
   private Label statusLabel;
 
-
+  /** The current {@link User} performing the search. */
   private User user;
+
+  /** Reference to the {@link UserHomeController} for accessing user-related operations. */
   private UserHomeController userHomeController;
+
+  /** ToggleGroup for managing the search type toggle buttons. */
   private ToggleGroup searchTypeGroup;
 
+  /**
+   * Initializes the controller with the {@link User} and {@link UserHomeController}.
+   *
+   * @param userHomeController The {@link UserHomeController} instance.
+   */
   public void init(UserHomeController userHomeController) {
     this.userHomeController = userHomeController;
     this.user = userHomeController.getUser();
+
     // Initialize the ToggleGroup and assign it to the ToggleButtons
     searchTypeGroup = new ToggleGroup();
     singleTagToggle.setToggleGroup(searchTypeGroup);
@@ -49,6 +80,11 @@ public class SearchPhotosController {
     updateTagInputs(); // Initialize the tag inputs
   }
 
+  /**
+   * Displays a warning dialog with the specified message.
+   *
+   * @param message The warning message to display.
+   */
   private void showWarning(String message) {
     Alert alert = new Alert(Alert.AlertType.WARNING);
     alert.setTitle("Warning");
@@ -57,6 +93,11 @@ public class SearchPhotosController {
     alert.showAndWait();
   }
 
+  /**
+   * Displays an error dialog with the specified message.
+   *
+   * @param message The error message to display.
+   */
   private void showError(String message) {
     Alert alert = new Alert(Alert.AlertType.ERROR);
     alert.setTitle("Error");
@@ -65,11 +106,18 @@ public class SearchPhotosController {
     alert.showAndWait();
   }
 
-  //update status message
+  /**
+   * Updates the status message displayed in the UI.
+   *
+   * @param message The status message to display.
+   */
   private void setStatusMessage(String message) {
     statusLabel.setText(message);
   }
 
+  /**
+   * Updates the tag input fields based on the selected search type.
+   */
   private void updateTagInputs() {
     tagInputContainer.getChildren().clear(); // Clear existing inputs
 
@@ -81,6 +129,13 @@ public class SearchPhotosController {
     }
   }
 
+  /**
+   * Creates a row of input fields for tag type and tag value.
+   *
+   * @param label1Text The text for the first label.
+   * @param label2Text The text for the second label.
+   * @return An HBox containing the input fields.
+   */
   private HBox createTagInputRow(String label1Text, String label2Text) {
     HBox row = new HBox(10);
     Label label1 = new Label(label1Text);
@@ -91,6 +146,10 @@ public class SearchPhotosController {
     return row;
   }
 
+  /**
+   * Handles the search operation based on the selected criteria.
+   * Filters {@link Photo}s by date range and {@link Tag}s, and displays the results.
+   */
   @FXML
   public void handleSearch() {
     LocalDate startDate = startDatePicker.getValue();
@@ -172,6 +231,11 @@ public class SearchPhotosController {
     }
   }
 
+  /**
+   * Handles the creation of a new {@link Album} from the search results.
+   *
+   * @param searchResults The list of {@link Photo}s to include in the new album.
+   */
   private void handleCreateAlbumFromResults(List<Photo> searchResults) {
     TextInputDialog dialog = new TextInputDialog();
     dialog.setTitle("Create Album");
@@ -191,5 +255,4 @@ public class SearchPhotosController {
       userHomeController.populateAlbums();
     });
   }
-
 }

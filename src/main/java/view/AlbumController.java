@@ -16,33 +16,68 @@ import javafx.stage.Stage;
 import java.io.File;
 import java.io.IOException;
 import java.util.Optional;
-
+/**
+ * Controller for managing the album view.
+ * This class handles the logic for displaying, adding, removing, and managing photos within an album.
+ * @author Reuben Thomas, Ryan Zaken
+ */
 public class AlbumController {
+  /**
+   * ListView for displaying the {@link Photo}s in the album.
+   */
   @FXML
   private ListView<Photo> photoList;
+
+  /**
+   * Label for displaying the status of operations.
+   */
   @FXML
   private Label statusLabel;
+
+  /**
+   * Label for displaying the name of the album.
+   */
   @FXML
   private Label albumNameLabel;
+
+  /**
+   * The {@link Album} being managed by this controller.
+   */
   private Album album;
+
+  /**
+   * The {@link User} who owns the album.
+   */
   private User user;
+
+  /**
+   * The main {@link Photos} application instance.
+   */
   private Photos app;
 
+  /**
+   * Initializes the controller with the application, user, and album.
+   *
+   * @param app   The main application instance.
+   * @param user  The user who owns the album.
+   * @param album The album being managed.
+   */
   public void init(Photos app, User user, Album album) {
     this.app = app;
     this.user = user;
     this.album = album;
     albumNameLabel.setText("Photos in album '" + album.getName() + "'");
-
     populatePhotos();
   }
 
+  /**
+   * Populates the ListView with photos from the album.
+   * Sets a custom cell factory to display photo thumbnails and captions.
+   */
   private void populatePhotos() {
     photoList.getItems().clear();
     photoList.getItems().addAll(album.getPhotos());
-    // Set custom cell factory to display photo thumbnails and captions
 
-    //TODO: figure out what this does. what is a cell factory? what is a list cell?
     photoList.setCellFactory(listView -> new ListCell<>() {
       private final ImageView imageView = new ImageView();
 
@@ -53,11 +88,9 @@ public class AlbumController {
           setText(null);
           setGraphic(null);
         } else {
-          // Set thumbnail
           File file = new File(photo.getPath());
           Image image = new Image(file.toURI().toString(), 50, 50, true, true);
           imageView.setImage(image);
-          // Set text
           setText(photo.toString());
           setGraphic(imageView);
         }
@@ -65,7 +98,11 @@ public class AlbumController {
     });
   }
 
-  //show warning
+  /**
+   * Displays a warning message in a dialog.
+   *
+   * @param message The warning message to display.
+   */
   private void showWarning(String message) {
     Alert alert = new Alert(Alert.AlertType.WARNING, message);
     alert.setTitle("Warning");
@@ -73,7 +110,11 @@ public class AlbumController {
     alert.showAndWait();
   }
 
-  //show error
+  /**
+   * Displays an error message in a dialog.
+   *
+   * @param message The error message to display.
+   */
   private void showError(String message) {
     Alert alert = new Alert(Alert.AlertType.ERROR, message);
     alert.setTitle("Error");
@@ -81,7 +122,12 @@ public class AlbumController {
     alert.showAndWait();
   }
 
-  //show confirmation
+  /**
+   * Displays a confirmation dialog with a message.
+   *
+   * @param message The confirmation message to display.
+   * @return An {@link Optional} containing the user's response.
+   */
   private Optional<ButtonType> showConfirmation(String message) {
     Alert alert = new Alert(Alert.AlertType.CONFIRMATION, message);
     alert.setTitle("Confirmation");
@@ -89,6 +135,10 @@ public class AlbumController {
     return alert.showAndWait();
   }
 
+  /**
+   * Handles the action of adding a photo to the album.
+   * Opens a file chooser to select an image file and adds it to the album.
+   */
   @FXML
   public void handleAddPhoto() {
     FileChooser fileChooser = new FileChooser();
@@ -126,6 +176,10 @@ public class AlbumController {
     }
   }
 
+  /**
+   * Handles the action of removing a photo from the album.
+   * Prompts the user for confirmation before removing the selected photo.
+   */
   @FXML
   public void handleRemovePhoto() {
     Photo selectedPhoto = photoList.getSelectionModel().getSelectedItem();
@@ -148,6 +202,10 @@ public class AlbumController {
     }
   }
 
+  /**
+   * Handles the action of adding or updating a caption for a selected photo.
+   * Opens a dialog to input the caption and updates the photo's caption.
+   */
   @FXML
   public void handleCaptionPhoto() {
     Photo selectedPhoto = photoList.getSelectionModel().getSelectedItem();
@@ -167,6 +225,10 @@ public class AlbumController {
     }
   }
 
+  /**
+   * Handles the action of displaying the details of a selected photo.
+   * Opens a new window to show the photo's details.
+   */
   @FXML
   public void handleDisplayPhoto() {
     Photo selectedPhoto = photoList.getSelectionModel().getSelectedItem();
@@ -193,6 +255,11 @@ public class AlbumController {
   }
 
 
+
+  /**
+   * Handles the action of adding a tag to a selected photo.
+   * Opens a dialog to select a tag type and value, and adds the tag to the photo.
+   */
   @FXML
   public void handleAddTag() {
     Photo selectedPhoto = photoList.getSelectionModel().getSelectedItem();
@@ -202,7 +269,7 @@ public class AlbumController {
         GridPane root = loader.load();
 
         AddTagDialogController controller = loader.getController();
-        controller.init(user.getTagTypes());
+        controller.init(user.getAllTagTypes());
 
         Dialog<ButtonType> dialog = new Dialog<>();
         dialog.setTitle("Add Tag");
@@ -211,10 +278,11 @@ public class AlbumController {
         dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
 
         Optional<ButtonType> result = dialog.showAndWait();
+        //check if the user clicked OK and if they chose a tag type and entered a value
         if (result.isPresent() && result.get() == ButtonType.OK && controller.isConfirmed()) {
           TagType tagType = controller.getSelectedTagType();
           String tagValue = controller.getTagValue();
-          System.out.println(user.getTagTypes());
+          System.out.println(user.getAllTagTypes());
           System.out.println(tagType);
           if (!tagType.isMultiValue() && selectedPhoto.hasTagType(tagType)) {
             // show error
@@ -242,6 +310,10 @@ public class AlbumController {
     }
   }
 
+  /**
+   * Handles the action of removing a tag from a selected photo.
+   * Opens a dialog to select a tag to remove and removes it from the photo.
+   */
   @FXML
   public void handleRemoveTag() {
     Photo selectedPhoto = photoList.getSelectionModel().getSelectedItem();
@@ -280,6 +352,10 @@ public class AlbumController {
     }
   }
 
+  /**
+   * Handles the action of copying a photo to another album.
+   * Opens a dialog to select a target album and copies the selected photo to it.
+   */
   @FXML
   public void handleCopyPhoto() {
     Photo selectedPhoto = photoList.getSelectionModel().getSelectedItem();
@@ -323,6 +399,10 @@ public class AlbumController {
     }
   }
 
+  /**
+   * Handles the action of moving a photo to another album.
+   * Opens a dialog to select a target album and moves the selected photo to it.
+   */
   @FXML
   public void handleMovePhoto() {
     Photo selectedPhoto = photoList.getSelectionModel().getSelectedItem();
@@ -372,6 +452,10 @@ public class AlbumController {
     }
   }
 
+  /**
+   * Handles the action of starting a slideshow of the photos in the album.
+   * Opens a new window to display the slideshow.
+   */
   @FXML
   public void handleSlideshow() {
     if (album.getPhotos().isEmpty()) {
@@ -398,7 +482,10 @@ public class AlbumController {
     }
   }
 
-
+  /**
+   * Handles the action of navigating back to the user home view.
+   * Switches the scene to the user home view.
+   */
   @FXML
   public void handleBack() {
     try {

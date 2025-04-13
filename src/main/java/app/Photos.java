@@ -9,20 +9,33 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.stage.Stage;
-import javafx.util.Pair;
 import view.LoginController;
 import view.UserHomeController;
 import view.AdminHomeController;
 
 import java.io.*;
-import java.util.HashMap;
-import java.util.Map;
 
+/**
+ * The main application class for the Photos application.
+ * This class initializes the application, manages user data, and handles view switching.
+ * @author Reuben Thomas, Ryan Zaken
+ */
 public class Photos extends Application {
+
+  /**
+   * The list of users in the application.
+   */
   private UserList userList;
+
+  /**
+   * The login scene for the application.
+   */
   private Scene loginScene;
-  private static String userListFilePath = null; // initialized in start method
-//  private Map<String, Object> userData = new HashMap<>();
+
+  /**
+   * The file path for storing user data.
+   */
+  private static String userListFilePath = null;
 
   @Override
   public void start(Stage stage) throws IOException {
@@ -47,11 +60,8 @@ public class Photos extends Application {
     if (!userList.hasUser("stock")) {
       initializeStockUser();
       // print that stock user has been initialized
-      System.out.println("Stock user initialized");
     }
 
-    System.out.println("Users loaded: " + userList.getAllUsernames());
-    System.out.println("Stock user and album initialized: " + userList.getUser("stock").getAlbumNames());
 
     /*LOAD LOGIN VIEW*/
     FXMLLoader fxmlLoader = new FXMLLoader(Photos.class.getResource("/view/login-view.fxml"));
@@ -63,6 +73,9 @@ public class Photos extends Application {
     stage.show();
   }
 
+  /**
+   * Initializes the stock user and their default album with stock photos.
+   */
   public void initializeStockUser() {
     User stock_user = userList.addUser("stock");
     Album stock_album = stock_user.addAlbum("stock");
@@ -80,30 +93,44 @@ public class Photos extends Application {
     }
     Album.setInitializingStock(false);
 
-   saveAllUserData();
+    saveAllUserData();
   }
 
+  /**
+   * Retrieves the user list.
+   *
+   * @return the user list
+   */
   public UserList getUserList() {
     return userList;
   }
 
+  /**
+   * Switches to the user home view for the specified user.
+   *
+   * @param stage    the stage to display the view
+   * @param username the username of the user
+   * @throws IOException if the view cannot be loaded
+   */
   public void switchToUserHomeView(Stage stage, String username) throws IOException {
     try {
         FXMLLoader userHomeLoader = new FXMLLoader(getClass().getResource("/view/user-home-view.fxml"));
         Scene userHomeScene = new Scene(userHomeLoader.load(), 640, 650);
         UserHomeController userHomeController = userHomeLoader.getController();
         userHomeController.init(this, userList.getUser(username));
-        // userHomeScenes.put(username, new Pair<>(userHomeScene, userHomeController));
-
         stage.setScene(userHomeScene);
         stage.setTitle("Photo Album " + "(User: " + username + ")"); // Set the title to the username
     } catch (IOException e) {
         showError("Failed to load user home view: " + e.getMessage());
     }
-
   }
 
-  // its init method must take the app as a parameter, and the admin user
+  /**
+   * Switches to the admin home view.
+   *
+   * @param stage the stage to display the view
+   * @throws IOException if the view cannot be loaded
+   */
   public void switchToAdminHomeView(Stage stage) throws IOException {
    try {
         FXMLLoader adminHomeLoader = new FXMLLoader(getClass().getResource("/view/admin-home-view.fxml"));
@@ -118,6 +145,11 @@ public class Photos extends Application {
     }
   }
 
+  /**
+   * Switches to the login view.
+   *
+   * @param stage the stage to display the view
+   */
   public void switchToLoginView(Stage stage) {
    try {
         stage.setScene(loginScene);
@@ -131,23 +163,9 @@ public class Photos extends Application {
     saveAllUserData();
   }
 
-  /* PUBLIC METHODS TO MANAGE USER DATA */
-//  public void addUserData(String key, Object value) {
-//    userData.put(key, value);
-//  }
-//
-//  public Object getUserData(String key) {
-//    return userData.get(key);
-//  }
-//
-//  public List<String> getUserDataKeys() {
-//    return new ArrayList<>(userData.keySet());
-//  }
-//
-//  public void clearUserData() {
-//    userData.clear();
-//  }
-  /* PERSISTENCE METHODS */
+  /**
+   * Saves all user data to the file.
+   */
   private void saveAllUserData() {
     try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(userListFilePath))) {
       out.writeObject(userList);
@@ -157,7 +175,11 @@ public class Photos extends Application {
     }
   }
 
-  //TODO: should admin be a user?
+  /**
+   * Loads all user data from the file.
+   *
+   * @return the loaded user list, or null if an error occurs
+   */
   private UserList loadAllUserData() {
     try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(userListFilePath))) {
       userList = (UserList) in.readObject();
@@ -168,7 +190,12 @@ public class Photos extends Application {
       return null;
     }
   }
-  //show error in a dialog
+
+  /**
+   * Displays an error message in a dialog.
+   *
+   * @param message the error message to display
+   */
   public void showError(String message) {
     Alert alert = new Alert(Alert.AlertType.ERROR);
     alert.setTitle("Error");
@@ -177,6 +204,11 @@ public class Photos extends Application {
     alert.showAndWait();
   }
 
+  /**
+   * The main entry point for the application.
+   *
+   * @param args the command-line arguments
+   */
   public static void main(String[] args) {
     launch(args);
   }
