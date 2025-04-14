@@ -3,7 +3,7 @@
 <?import javafx.scene.layout.*?>
 
 <?import javafx.geometry.Insets?>
-<DialogPane xmlns:fx="http://javafx.com/fxml" fx:controller="view.ViewTagTypesController">
+<DialogPane xmlns:fx="http://javafx.com/fxml" fx:controller="view.ManageTagTypesController">
     <content>
         <GridPane hgap="10" vgap="10">
             <padding>

@@ -5,10 +5,21 @@
   <title>Photo Management Application</title></head>
 <body>
 <h1>Photo Management Application</h1>
-<p>This application allows users to manage photo albums, add and remove photos, tag photos with metadata, and search
-  photos by date or tag. The user interface is built using JavaFX, and the application follows the MVC
-  (Model-View-Controller) design pattern.</p>
+<p>This application allows users to manage photo albums, add and remove photos, tag photos with metadata, create their
+  own tag types and search photos by date or tag. The user interface is built using JavaFX, and the application follows
+  the MVC (Model-View-Controller) design pattern.</p>
 <p>The application supports features such as user management, album management, photo viewing, slideshow mode, and
   more.</p>
+<h2>Persistence and Data Storage</h2>
+<p>
+  The application uses Java's built-in object serialization to persist user data and application state.
+  When the application is closed, all app data user accounts, albums, photos, and associated metadata are serialized
+  and saved to the disk in one file <code>photos_app_data.dat</code>. Upon startup, the application reads this file and restores
+  the data in memory, ensuring a seamless user experience between sessions.
+</p>
+<p>
+  The persistence is managed in the <code>Photos</code> driver class, which provides methods
+  for saving and loading data, abstracting away file handling details from other parts of the application.
+</p>
 </body>
 </html>

@@ -16,9 +16,11 @@ import javafx.stage.Stage;
 import java.io.File;
 import java.io.IOException;
 import java.util.Optional;
+
 /**
  * Controller for managing the album view.
  * This class handles the logic for displaying, adding, removing, and managing photos within an album.
+ *
  * @author Reuben Thomas, Ryan Zaken
  */
 public class AlbumController {
@@ -170,7 +172,7 @@ public class AlbumController {
         album.addPhoto(photoToAdd);
         populatePhotos();
         statusLabel.setText("Photo added: " + selectedFile.getName());
-      } catch (IllegalArgumentException | IllegalStateException e) {
+      } catch (Exception e) {
         showWarning(e.getMessage());
       }
     }
@@ -189,7 +191,8 @@ public class AlbumController {
       if (result.isPresent() && result.get() == ButtonType.OK) {
         try {
           album.removePhoto(selectedPhoto);
-        } catch (IllegalArgumentException e) {
+        } catch (Exception e) {
+//          here
           showError(e.getMessage());
         }
         populatePhotos();
@@ -245,7 +248,7 @@ public class AlbumController {
         stage.setScene(scene);
         stage.setTitle("Photo Details - " + new File(selectedPhoto.getPath()).getName());
         stage.show();
-      } catch (IOException e) {
+      } catch (Exception e) {
         // show error
         showError("Error loading photo details: " + e.getMessage());
       }
@@ -253,7 +256,6 @@ public class AlbumController {
       showWarning("No photo selected!");
     }
   }
-
 
 
   /**
@@ -295,12 +297,12 @@ public class AlbumController {
             Tag tag = new Tag(tagType, tagValue);
             selectedPhoto.addTag(tag);
             statusLabel.setText("Tag added: " + tag);
-          } catch (IllegalArgumentException | IllegalStateException e) {
+          } catch (Exception e) {
             // show error
             showError(e.getMessage());
           }
         }
-      } catch (IOException e) {
+      } catch (Exception e) {
         //Handle IOException
         showError("Error loading add tag dialog: " + e.getMessage());
       }
@@ -342,7 +344,7 @@ public class AlbumController {
             showWarning("No tag selected!");
           }
         }
-      } catch (IOException e) {
+      } catch (Exception e) {
         // Handle IOException
         showError("Error loading remove tag dialog: " + e.getMessage());
       }
@@ -380,7 +382,7 @@ public class AlbumController {
             try {
               targetAlbum.addPhoto(selectedPhoto);
               statusLabel.setText("Photo copied to album: " + targetAlbum.getName());
-            } catch (IllegalArgumentException | IllegalStateException e) {
+            } catch (Exception e) {
               //catch add photo exception.
               showError(e.getMessage());
             }
@@ -389,7 +391,7 @@ public class AlbumController {
             showWarning("No album selected!");
           }
         }
-      } catch (IOException e) {
+      } catch (Exception e) {
         // Handle IOException
         showError("Error loading select album dialog: " + e.getMessage());
       }
@@ -403,6 +405,7 @@ public class AlbumController {
    * Handles the action of moving a photo to another album.
    * Opens a dialog to select a target album and moves the selected photo to it.
    */
+
   @FXML
   public void handleMovePhoto() {
     Photo selectedPhoto = photoList.getSelectionModel().getSelectedItem();
@@ -425,17 +428,9 @@ public class AlbumController {
           Album targetAlbum = controller.getSelectedAlbum();
           if (targetAlbum != null) {
             try {
-              album.removePhoto(selectedPhoto);
-              try {
-                targetAlbum.addPhoto(selectedPhoto);
-                populatePhotos();
-                statusLabel.setText("Photo moved to album: " + targetAlbum.getName());
-              } catch (IllegalArgumentException | IllegalStateException e) {
-                //catch add photo exception.
-                album.addPhoto(selectedPhoto); // Re-add the photo to the original album
-                throw e; // Re-throw the exception to handle it in the outer catch block
-              }
-            } catch (IllegalArgumentException | IllegalStateException e) {
+              //if target album is the same as the current album, throw an exception
+              movePhoto(selectedPhoto, album, targetAlbum);
+            } catch (Exception e) {
               //catch remove photo OR re-thrown add photo exception
               showError(e.getMessage());
             }
@@ -443,12 +438,48 @@ public class AlbumController {
             showWarning("No album selected!");
           }
         }
-      } catch (IOException e) {
+      } catch (Exception e) {
         // Handle IOException
         showError("Error loading select album dialog: " + e.getMessage());
       }
     } else {
       showWarning("No photo selected!");
+    }
+  }
+
+  //move photo method
+  /**
+   * Moves a photo from one album to another.
+   * Ensures that the photo is removed from the source album and added to the target album.
+   * If the operation fails at any point, the photo is restored to its original album.
+   *
+   * @param photoToMove The photo to be moved.
+   * @param sourceAlbum The album from which the photo is to be removed.
+   * @param targetAlbum The album to which the photo is to be added.
+   * @throws Exception If the photo cannot be moved, such as when the source and target albums are the same,
+   *                   or if an error occurs during the removal or addition of the photo.
+   */
+  private void movePhoto(Photo photoToMove, Album sourceAlbum, Album targetAlbum) throws Exception {
+    if (sourceAlbum.equals(targetAlbum)) {
+      throw new Exception("Cannot move photo to the same album.");
+    }
+
+    // Remove the photo from the source album
+    try {
+      sourceAlbum.removePhoto(photoToMove);
+    } catch (Exception e) {
+      throw new Exception("Failed to remove photo from the source album: " + e.getMessage());
+    }
+
+    try {
+      // Add the photo to the target album
+      targetAlbum.addPhoto(photoToMove);
+      populatePhotos();
+      statusLabel.setText("Photo moved to album: " + targetAlbum.getName());
+    } catch (Exception e) {
+      // Re-add the photo to the source album in case of failure
+      sourceAlbum.addPhoto(photoToMove);
+      throw new Exception("Failed to add photo to the target album: " + e.getMessage());
     }
   }
 
@@ -476,7 +507,7 @@ public class AlbumController {
       slideshowStage.setScene(scene);
       slideshowStage.setTitle("Slideshow");
       slideshowStage.show();
-    } catch (IOException e) {
+    } catch (Exception e) {
       // handle IOException
       showError("Error loading slideshow view: " + e.getMessage());
     }
@@ -490,7 +521,7 @@ public class AlbumController {
   public void handleBack() {
     try {
       app.switchToUserHomeView((Stage) photoList.getScene().getWindow(), user.getUsername());
-    } catch (IOException e) {
+    } catch (Exception e) {
       // handle IOException
       showError("Error loading user home view: " + e.getMessage());
     }

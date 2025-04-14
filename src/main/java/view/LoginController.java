@@ -92,7 +92,7 @@ public class LoginController {
   private void openAdminView() {
     try {
       app.switchToAdminHomeView((Stage) usernameField.getScene().getWindow());
-    } catch (IOException e) {
+    } catch (Exception e) {
       // Handle exception
       showErrorDialog("Error loading Admin View: " + e.getMessage());
     }
@@ -107,7 +107,7 @@ public class LoginController {
   private void openUserView(String username) {
     try {
       app.switchToUserHomeView((Stage) usernameField.getScene().getWindow(), username);
-    } catch (IOException e) {
+    } catch (Exception e) {
       showErrorDialog("Error loading User view: " + e.getMessage());
     }
   }

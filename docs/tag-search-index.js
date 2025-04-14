@@ -1,1 +1,1 @@
-tagSearchIndex = [{"l":"Serialized Form","h":"","u":"serialized-form.html"}];updateSearchResults();
+tagSearchIndex = [{"l":"Persistence and Data Storage","h":"Overview","d":"Section","u":"index.html#persistence-and-data-storage-heading"},{"l":"Photo Management Application","h":"Overview","d":"Section","u":"index.html#photo-management-application-heading"},{"l":"Serialized Form","h":"","u":"serialized-form.html"}];updateSearchResults();

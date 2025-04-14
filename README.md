@@ -1,3 +1,39 @@
+# Main Project Structure:
+```
+Photos70/
+├── src/
+│   ├── main/
+│   │   ├── java/
+│   │   │   ├── app/ 
+│   │   │   │   ├── Photos.java (app driver)
+│   │   │   │   └── model/
+│   │   │   │       ├── Album.java
+│   │   │   │       ├── Photo.java
+│   │   │   │       ├── Tag.java
+│   │   │   │       └── other model classes...
+│   │   │   └── view/
+│   │   │       ├── AddTagDialogController.java
+│   │   │       ├── AdminHomeController.java
+│   │   │       ├── AlbumController.java
+│   │   │       ├── LoginController.java
+│   │   │       └── other controller classes...
+│   │   └── resources/
+│   │       └── view/
+│   │           ├── add-tag-dialog.fxml
+│   │           ├── Admin-home-view.fxml
+│   │           ├── album-view.fxml
+│   │           └── other FXML files...
+│   │        
+├── data/
+│   └── stock photos...
+├── docs/
+│   └── Javadoc files...
+├── .git/
+├── .gitignore
+├── pom.xml
+└── README.md
+```
+
 # Project Checklist
 
 ---

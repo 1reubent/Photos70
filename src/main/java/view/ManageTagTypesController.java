@@ -13,7 +13,7 @@ import java.util.Optional;
  * whether a tag type supports multiple values.
  * @author Reuben Thomas, Ryan Zaken
  */
-public class ViewTagTypesController {
+public class ManageTagTypesController {
 
     /** ListView displaying the user's {@link TagType}s. */
     @FXML

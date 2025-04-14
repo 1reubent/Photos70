@@ -158,17 +158,17 @@ public class UserHomeController {
      * Loads and displays the tag types dialog.
      */
     @FXML
-    public void handleViewTagTypes() {
+    public void handleManageTagTypes() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/view-tag-types-dialog.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/manage-tag-types-dialog.fxml"));
             DialogPane dialogPane = loader.load();
 
-            ViewTagTypesController controller = loader.getController();
+            ManageTagTypesController controller = loader.getController();
             controller.init(user);
 
             Dialog<ButtonType> dialog = new Dialog<>();
             dialog.setDialogPane(dialogPane);
-            dialog.setTitle("View My Tag Types");
+            dialog.setTitle("Manage My Tag Types");
             dialog.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
             dialog.showAndWait();
         } catch (IOException e) {
